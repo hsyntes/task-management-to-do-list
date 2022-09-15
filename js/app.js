@@ -626,11 +626,3 @@ class App {
 }
 
 const app = new App();
-
-const height = getComputedStyle(document.documentElement)
-  .getPropertyValue("--app-area")
-  .trim();
-
-console.log(height);
-
-console.log(height.substring(0, 2));
