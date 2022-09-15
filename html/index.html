@@ -11,7 +11,7 @@
   </head>
   <body>
     <div class="container">
-      <div class="row justify-content-center">
+      <div class="row justify-content-center align-items-center">
         <div class="app d-flex col-md-8 col-lg-6 rounded shadow p-0">
           <div
             class="col-12 d-flex flex-column position-relative"
@@ -36,7 +36,7 @@
             <header class="px-4">
               <h5 class="text-muted mb-0 mb-4">Chose an activity</h5>
             </header>
-            <main class="my-auto px-4" id="activities"></main>
+            <main class="px-4" id="activities"></main>
             <footer class="position-absolute p-4" style="right: 0; bottom: 0">
               <button
                 type="button"
@@ -50,7 +50,10 @@
             </footer>
           </div>
           <div class="col-12 d-flex flex-column bg-primary" id="app-task">
-            <nav class="navbar navbar-expand navbar-light px-4 py-5">
+            <nav
+              class="navbar navbar-expand navbar-light px-4 py-5"
+              id="app-task-navbar"
+            >
               <div class="col-2">
                 <button
                   type="button"
@@ -92,7 +95,7 @@
               </div>
             </nav>
             <section class="app-area"></section>
-            <header class="d-flex align-items-center px-4">
+            <header class="d-flex align-items-center px-4" id="app-task-header">
               <span>
                 <h5 class="text-light mb-0">Today</h5>
                 <span class="text-light" id="tasks-count"></span>
@@ -107,7 +110,11 @@
               </button>
             </header>
             <section class="app-area"></section>
-            <main class="bg-light rounded-left p-4">
+            <main class="bg-light rounded-left p-4" id="app-task-main">
+              <div
+                class="bg-primary rounded-pill shadow w-25 m-auto mb-4"
+                style="padding: 2px"
+              ></div>
               <div class="row">
                 <div class="col-7">
                   <canvas id="task-chart"></canvas>
@@ -117,7 +124,7 @@
                   id="task-chart-info"
                 ></div>
               </div>
-              <div class="my-5" id="tasks"></div>
+              <div class="mt-5" id="tasks"></div>
             </main>
           </div>
           <div

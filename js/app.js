@@ -32,6 +32,7 @@ const [appActivity, btnActivityMenu, selectActivity, activities] = [
 
 // The App Task's Elements
 const [
+  appTaskMain,
   appTask,
   btnGoToAppActivity,
   appTaskTitle,
@@ -42,6 +43,7 @@ const [
   includeTimePeriod,
   tasks,
 ] = [
+  document.querySelector("#app-task-main"),
   document.querySelector("#app-task"),
   document.querySelector("#btn-go-to-app-acitivty"),
   document.querySelector("#app-task-title"),
@@ -54,12 +56,34 @@ const [
 ];
 
 const ctx = document.querySelector("#task-chart").getContext("2d");
+
 const offcanvasBody = document.querySelector(".offcanvas-body");
 
 // The App Class
 class App {
   #activities = [];
   #currentActivity;
+
+  #heights = {
+    navbarHeight: document
+      .querySelector("#app-task-navbar")
+      .getBoundingClientRect().height,
+    headerHeight: document
+      .querySelector("#app-task-header")
+      .getBoundingClientRect().height,
+    appAreaHeight: Number(
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--app-area")
+        .trim()
+        .substring(0, 2) * 2
+    ),
+  };
+
+  #appTaskMainTop = `${
+    this.#heights.navbarHeight +
+    this.#heights.headerHeight +
+    this.#heights.appAreaHeight
+  }px`;
 
   #taskChart;
 
@@ -141,6 +165,16 @@ class App {
 
     formAddTask.addEventListener("submit", this._createTask.bind(this));
 
+    // Setting default margin-top value for main element which position is fixed
+    appTaskMain.style.top = this.#appTaskMainTop;
+
+    // When scrolled down, main element which position is fixed will be at the top
+    appTaskMain.addEventListener("wheel", (e) => {
+      e.deltaY > 0
+        ? (appTaskMain.style.top = "0%")
+        : (appTaskMain.style.top = this.#appTaskMainTop);
+    });
+
     // Starting the timer and getting the current task
     tasks.addEventListener("mousedown", (e) => {
       const taskHTML = e.target.closest(".task");
@@ -214,7 +248,7 @@ class App {
     activities.innerHTML = "";
     this.#activities.forEach((activity) => {
       const html = `
-        <div class="activity d-flex align-items-center btn-link rounded shadow p-4 my-4">
+        <div class="activity d-flex align-items-center btn btn-link rounded shadow p-4 my-4">
           <div class="col-2 text-start">
             <i class="${activity.activityIcon}"></i>
           </div>
@@ -271,7 +305,7 @@ class App {
 
     this.#currentActivityTasks.forEach((currentActivityTask, index) => {
       let html = `
-        <div class="task w-100 btn-link rounded shadow p-4 my-4">
+        <div class="task w-100 btn-link rounded shadow p-4 mt-4">
           <span>
             <input
               type="checkbox"
@@ -592,3 +626,11 @@ class App {
 }
 
 const app = new App();
+
+const height = getComputedStyle(document.documentElement)
+  .getPropertyValue("--app-area")
+  .trim();
+
+console.log(height);
+
+console.log(height.substring(0, 2));

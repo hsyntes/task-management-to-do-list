@@ -22,8 +22,12 @@ $font-weight-bold: 900;
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 
+:root {
+  --app-area: 50px;
+}
+
 .app-area {
-  height: 50px;
+  height: var(--app-area);
 }
 
 ::-webkit-scrollbar {
@@ -105,16 +109,17 @@ body {
 
 .container {
   .app {
+    height: 100vh;
     overflow: hidden;
     color: $primary;
     #app-activity,
     #app-task {
-      transition: 0.3s transform ease-out;
-      height: 100vh;
+      transition: $transition-base;
       main {
         height: 100%;
         overflow: hidden;
-        overflow-y: scroll;
+        overflow-y: scroll !important;
+        transition: $transition-base;
         .task {
           user-select: none;
           input {
@@ -123,6 +128,10 @@ body {
             }
           }
         }
+      }
+
+      main#app-task-main {
+        position: fixed;
       }
     }
   }

@@ -10929,8 +10929,12 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+:root {
+  --app-area: 50px;
+}
+
 .app-area {
-  height: 50px;
+  height: var(--app-area);
 }
 
 ::-webkit-scrollbar {
@@ -11005,19 +11009,20 @@ body {
 }
 
 .container .app {
+  height: 100vh;
   overflow: hidden;
   color: #5800ff;
 }
 .container .app #app-activity,
 .container .app #app-task {
-  transition: 0.3s transform ease-out;
-  height: 100vh;
+  transition: all 0.3s ease-out;
 }
 .container .app #app-activity main,
 .container .app #app-task main {
   height: 100%;
   overflow: hidden;
-  overflow-y: scroll;
+  overflow-y: scroll !important;
+  transition: all 0.3s ease-out;
 }
 .container .app #app-activity main .task,
 .container .app #app-task main .task {
@@ -11029,6 +11034,10 @@ body {
 .container .app #app-activity main .task input:checked + label,
 .container .app #app-task main .task input:checked + label {
   text-decoration: line-through;
+}
+.container .app #app-activity main#app-task-main,
+.container .app #app-task main#app-task-main {
+  position: fixed;
 }
 
 @-webkit-keyframes dropdown-menu-fade-transition {
