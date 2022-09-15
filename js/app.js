@@ -499,7 +499,7 @@ class App {
           (currentActivityTask) => currentActivityTask.task === taskInput.value
         )
       )
-        this._modalWarning("This text is already exists.");
+        this._modalWarning("This text already exists.");
       else {
         let task;
 
