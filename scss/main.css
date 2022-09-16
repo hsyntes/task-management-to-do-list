@@ -11035,10 +11035,6 @@ body {
 .container .app #app-task main .task input:checked + label {
   text-decoration: line-through;
 }
-.container .app #app-activity main#app-task-main,
-.container .app #app-task main#app-task-main {
-  position: fixed;
-}
 
 @-webkit-keyframes dropdown-menu-fade-transition {
   0% {

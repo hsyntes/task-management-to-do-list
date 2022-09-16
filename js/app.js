@@ -157,6 +157,7 @@ class App {
     // Going to the app activity page
     btnGoToAppActivity.addEventListener("click", () => {
       this._switchPages(appTask, appActivity);
+      appTaskMain.style.position = "block";
     });
 
     btnDeleteAllTasks.addEventListener("click", () => {
@@ -335,6 +336,8 @@ class App {
   // Going to the task page
   _goToAppTask() {
     this._switchPages(appActivity, appTask);
+
+    appTaskMain.style.position = "fixed";
 
     this.#currentActivityTasks = [];
 
