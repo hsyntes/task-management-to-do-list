@@ -10938,7 +10938,7 @@ textarea.form-control-lg {
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 3px;
 }
 
 ::-webkit-scrollbar-track {
@@ -11019,7 +11019,7 @@ body {
 }
 .container .app #app-activity main,
 .container .app #app-task main {
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
   overflow-y: scroll !important;
   transition: all 0.3s ease-out;
