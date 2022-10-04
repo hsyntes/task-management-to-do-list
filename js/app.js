@@ -198,6 +198,11 @@ class App {
       }
 
       this._timer("task");
+
+      const hour = this.#currentTask.timePeriod?.slice(0, 5);
+      const hourType = this.#currentTask.timePeriod?.slice(6, 8);
+
+      console.log(hour, hourType);
     });
 
     // Stopping the timer
@@ -629,3 +634,11 @@ class App {
 }
 
 const app = new App();
+
+// Notification.requestPermission().then((permission) => {
+//   if (permission === "granted") {
+//     const notification = new Notification("Test", {
+//       body: "Test notify",
+//     });
+//   }
+// });
