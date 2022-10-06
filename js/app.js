@@ -56,6 +56,23 @@ const [
   document.querySelector("#tasks"),
 ];
 
+// Time period elements
+const [
+  selectStartHour,
+  selectStartMinute,
+  selectStartAmPm,
+  selectFinishHour,
+  selectFinishMinute,
+  selectFinishAmPm,
+] = [
+  document.querySelector("#select-start-hour"),
+  document.querySelector("#select-start-minute"),
+  document.querySelector("#select-start-am-pm"),
+  document.querySelector("#select-finish-hour"),
+  document.querySelector("#select-finish-minute"),
+  document.querySelector("#select-finish-am-pm"),
+];
+
 const ctx = document.querySelector("#task-chart").getContext("2d");
 
 const offcanvasBody = document.querySelector(".offcanvas-body");
@@ -112,6 +129,8 @@ class App {
 
   constructor() {
     this._getActivites();
+
+    this._comingTask();
 
     btnActivityMenu.addEventListener("click", () => {
       const btnDeleteAllActivities = this._createOffcanvasBtns();
@@ -218,6 +237,18 @@ class App {
     });
   }
 
+  // Sending notification if the time is close
+  _comingTask() {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        const notification = new Notification("Task", {
+          body: "Coming Task",
+          icon: "./img/notify.png",
+        });
+      }
+    });
+  }
+
   // Creating offcanvas buttons
   _createOffcanvasBtns() {
     $(".offcanvas").offcanvas("show");
@@ -250,9 +281,8 @@ class App {
   }
 
   // Saving activities to the Local Storage
-  _saveActivities() {
+  _saveActivities = () =>
     localStorage.setItem("activities", JSON.stringify(this.#activities));
-  }
 
   // Rendering activities
   _renderActivities() {
@@ -489,16 +519,13 @@ class App {
   }
 
   // Switching pages
-  _switchPages(from, to) {
+  _switchPages = (from, to) =>
     from.id === "app-activity" && to.id === "app-task"
       ? `${(from.style.transform = to.style.transform = "translateX(-100%)")}`
       : `${(from.style.transform = to.style.transform = "translateX(0%)")}`;
-  }
 
   // Calculating tasks count
-  _calcTasksCount() {
-    return `${this.#currentActivityTasks.length} Tasks`;
-  }
+  _calcTasksCount = () => `${this.#currentActivityTasks.length} Tasks`;
 
   // Showing error/warning message to user
   _modalWarning(text) {
@@ -508,36 +535,18 @@ class App {
   }
 
   // Checking and confirming the task input
-  _checkTaskInput(input) {
-    if (input.value === "")
-      this._modalWarning("The task input can't be empty.");
-    else return input;
-  }
+  _checkTaskInput = (input) =>
+    input.value === ""
+      ? this._modalWarning("The task input can't be empty.")
+      : input;
 
   // Getting time period (interval)
-  _getTimePeriod() {
-    const [
-      selectStartHour,
-      selectStartMinute,
-      selectStartAmPm,
-      selectFinishHour,
-      selectFinishMinute,
-      selectFinishAmPm,
-    ] = [
-      document.querySelector("#select-start-hour"),
-      document.querySelector("#select-start-minute"),
-      document.querySelector("#select-start-am-pm"),
-      document.querySelector("#select-finish-hour"),
-      document.querySelector("#select-finish-minute"),
-      document.querySelector("#select-finish-am-pm"),
-    ];
-
-    return `${selectStartHour.value}:${
+  _getTimePeriod = () =>
+    `${selectStartHour.value}:${
       selectStartMinute.value
     } ${selectStartAmPm.value.toUpperCase()} - ${selectFinishHour.value}:${
       selectFinishMinute.value
     } ${selectFinishAmPm.value.toUpperCase()}`;
-  }
 
   // Creating new tasks
   _createTask(e) {
