@@ -4,6 +4,7 @@
 class Activity {
   constructor(activityType, activityIcon) {
     this.activityType = activityType;
+
     if (activityIcon)
       this.activityIcon = activityIcon.replace("fa-4x", "fa-2x");
   }
@@ -13,7 +14,7 @@ class Activity {
 class Task extends Activity {
   constructor(activityType, task, timePeriod, checked = false) {
     super(activityType);
-    // this.activityType = activityType;
+
     this.task = task;
     this.timePeriod = timePeriod;
     this.checked = checked;
@@ -114,6 +115,7 @@ class App {
 
     btnActivityMenu.addEventListener("click", () => {
       const btnDeleteAllActivities = this._createOffcanvasBtns();
+
       btnDeleteAllActivities.innerHTML = `
       <span>
         <i class="fa fa-trash-o"></i>
@@ -190,6 +192,7 @@ class App {
 
       if (e.target.classList.contains("form-check-input")) {
         const input = e.target;
+
         if (!input.checked) this.#currentTask.checked = true;
         else this.#currentTask.checked = false;
 
@@ -220,6 +223,7 @@ class App {
     $(".offcanvas").offcanvas("show");
 
     offcanvasBody.innerHTML = "";
+
     const btn = document.createElement("button");
     btn.setAttribute("type", "button");
     btn.setAttribute("data-bs-dismiss", "offcanvas");
@@ -234,6 +238,7 @@ class App {
   _checkActivityBtns() {
     document.querySelectorAll(".btn-activity").forEach((btnActivity) => {
       btnActivity.disabled = false;
+
       this.#activities.forEach((activity) => {
         if (
           activity.activityType ===
@@ -252,6 +257,7 @@ class App {
   // Rendering activities
   _renderActivities() {
     activities.innerHTML = "";
+
     this.#activities.forEach((activity) => {
       const html = `
         <div class="activity d-flex align-items-center btn btn-link rounded shadow p-4 my-4">
@@ -358,6 +364,7 @@ class App {
   // Deleting all the tasks for current activity
   _deleteAllTasks() {
     localStorage.removeItem(this.#currentActivity.activityType);
+
     location.reload();
 
     this._goToAppTask();
@@ -410,8 +417,10 @@ class App {
   // The timer function
   _timer(type) {
     this.#time = 1.5;
+
     const tick = () => {
       this.#time--;
+
       if (this.#time < 0) {
         if (type === "activity") {
           const btnDeleteCurrentActivity = this._createOffcanvasBtns();
@@ -456,6 +465,7 @@ class App {
     if (!activities) return;
 
     this.#activities = activities;
+
     this._renderActivities();
   }
 
