@@ -130,8 +130,6 @@ class App {
   constructor() {
     this._getActivites();
 
-    this._comingTask();
-
     btnActivityMenu.addEventListener("click", () => {
       const btnDeleteAllActivities = this._createOffcanvasBtns();
 
@@ -234,18 +232,6 @@ class App {
       if (!taskHTML) return;
 
       clearInterval(this.#timerInterval);
-    });
-  }
-
-  // Sending notification if the time is close
-  _comingTask() {
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        const notification = new Notification("Task", {
-          body: "Coming Task",
-          icon: "./img/notify.png",
-        });
-      }
     });
   }
 
@@ -374,6 +360,32 @@ class App {
     });
   }
 
+  _getDate = () => `${new Date().getHours()} ${new Date().getMinutes()}`;
+
+  // Sending notification if the time is come close
+  _comingTask() {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        const date = this._getDate();
+        console.log(date);
+
+        console.log(this.#currentActivityTasks);
+
+        console.log(
+          this.#currentActivityTasks.filter(
+            (currentActivityTask) =>
+              typeof currentActivityTask.timePeriod !== "undefined"
+          )
+        );
+
+        new Notification("Task", {
+          body: "Coming Task",
+          icon: "../img/icon.png",
+        });
+      }
+    });
+  }
+
   // Going to the task page
   _goToAppTask() {
     this._switchPages(appActivity, appTask);
@@ -389,6 +401,7 @@ class App {
 
     this._renderTasks();
     this._taskChart();
+    this._comingTask();
   }
 
   // Deleting all the tasks for current activity
