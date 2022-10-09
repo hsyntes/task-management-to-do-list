@@ -188,11 +188,13 @@ class App {
     // Setting default margin-top value for main element which position is fixed
     appTaskMain.style.top = this.#appTaskMainTop;
 
-    // When scrolled down, main element which position is fixed will be at the top
-    appTaskMain.addEventListener("wheel", (e) => {
-      e.deltaY > 0
-        ? (appTaskMain.style.top = "0%")
-        : (appTaskMain.style.top = this.#appTaskMainTop);
+    appTaskMain.addEventListener("scroll", () => {
+      console.log(appTaskMain.scrollTop);
+      if (appTaskMain.scrollTop === 0) {
+        appTaskMain.style.top = this.#appTaskMainTop;
+      } else {
+        appTaskMain.style.top = "0%";
+      }
     });
 
     // Starting the timer and getting the current task
@@ -367,19 +369,20 @@ class App {
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
         const date = this._getDate();
+
         console.log(date);
 
         console.log(this.#currentActivityTasks);
 
-        console.log(
-          this.#currentActivityTasks.filter(
-            (currentActivityTask) =>
-              typeof currentActivityTask.timePeriod !== "undefined"
-          )
+        const tasksTimePeriod = this.#currentActivityTasks.filter(
+          (currentActivityTask) =>
+            typeof currentActivityTask.timePeriod !== "undefined"
         );
 
+        console.log(tasksTimePeriod);
+
         new Notification("Task", {
-          body: "Coming Task",
+          body: "Upcoming Task",
           icon: "../img/icon.png",
         });
       }
@@ -390,14 +393,13 @@ class App {
   _goToAppTask() {
     this._switchPages(appActivity, appTask);
 
-    appTaskMain.style.position = "fixed";
-
     this.#currentActivityTasks = [];
 
     this._getCurrentActivityTasks();
 
     appTaskTitle.textContent = this.#dateTimeFormat;
     tasksCount.textContent = this._calcTasksCount();
+    appTaskMain.style.position = "fixed";
 
     this._renderTasks();
     this._taskChart();

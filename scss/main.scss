@@ -115,7 +115,7 @@ body {
     #app-task {
       transition: $transition-base;
       main {
-        height: 100vh;
+        height: 100%;
         overflow: hidden;
         overflow-y: scroll !important;
         transition: $transition-base;
@@ -128,10 +128,6 @@ body {
           }
         }
       }
-
-      // main#app-task-main {
-      //   position: fixed;
-      // }
     }
   }
 }
