@@ -381,6 +381,19 @@ class App {
 
         console.log(tasksTimePeriod);
 
+        tasksTimePeriod.forEach((taskTimePeriod) => {
+          console.log(taskTimePeriod.timePeriod);
+          console.log(new Date().getHours());
+          const timeFormat = taskTimePeriod.timePeriod.slice(6, 8);
+          console.log(timeFormat);
+
+          if (timeFormat === "AM") {
+          }
+
+          if (timeFormat === "PM") {
+          }
+        });
+
         new Notification("Task", {
           body: "Upcoming Task",
           icon: "../img/icon.png",
