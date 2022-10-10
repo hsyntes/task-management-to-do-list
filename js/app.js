@@ -356,43 +356,6 @@ class App {
     });
   }
 
-  // Sending notification to the user if the time is upcoming
-  _comingTask() {
-    this.#currentActivityTasks
-      .filter(
-        (currentActivityTask) =>
-          typeof currentActivityTask.timePeriod !== "undefined"
-      )
-      .forEach((taskHasTimePeriod) => {
-        const [taskTimeStart, taskTimeFormat] = [
-          taskHasTimePeriod.timePeriod.slice(0, 2),
-          taskHasTimePeriod.timePeriod.slice(6, 8),
-        ];
-
-        this.#userCurrentTime = new Date().getHours();
-
-        console.log(
-          `Task Time: ${taskTimeStart}, Task Time Format: ${taskTimeFormat}, User Current Time: ${
-            this.#userCurrentTime
-          }`
-        );
-
-        if (this.#userCurrentTime >= 12) this.#userCurrentTime -= 12;
-
-        if (
-          taskTimeStart - this.#userCurrentTime > 0 &&
-          taskTimeStart - this.#userCurrentTime <= 1
-        )
-          Notification.requestPermission().then((permission) => {
-            if (permission === "granted")
-              new Notification("Upcoming Task", {
-                body: `${taskHasTimePeriod.task}`,
-                icon: "../img/icon.png",
-              });
-          });
-      });
-  }
-
   // Going to the task page
   _goToAppTask() {
     this._switchPages(appActivity, appTask);
@@ -567,47 +530,6 @@ class App {
       selectFinishMinute.value
     } ${selectFinishAmPm.value.toUpperCase()}`;
 
-  // Creating new tasks
-  _createTask(e) {
-    e.preventDefault();
-
-    const taskInput = this._checkTaskInput(inputAddTask);
-
-    if (taskInput) {
-      if (
-        this.#currentActivityTasks.some(
-          (currentActivityTask) => currentActivityTask.task === taskInput.value
-        )
-      )
-        this._modalWarning("This text already exists.");
-      else {
-        let task;
-
-        !includeTimePeriod.checked
-          ? (task = new Task(
-              this.#currentActivity.activityType,
-              taskInput.value
-            ))
-          : (task = new Task(
-              this.#currentActivity.activityType,
-              taskInput.value,
-              this._getTimePeriod()
-            ));
-
-        this.#currentActivityTasks.push(task);
-
-        this._saveTasks();
-        this._renderTasks();
-
-        tasksCount.textContent = this._calcTasksCount();
-
-        inputAddTask.value = "";
-
-        this._taskChart();
-      }
-    }
-  }
-
   // Task chart data by incompleted and completed tasks
   _taskChart() {
     const completedTasks = this.#currentActivityTasks.filter(
@@ -668,6 +590,85 @@ class App {
     `;
 
     this.#taskChart.update();
+  }
+
+  // Sending notification to the user if the time is upcoming
+  _comingTask() {
+    this.#currentActivityTasks
+      .filter(
+        (currentActivityTask) =>
+          typeof currentActivityTask.timePeriod !== "undefined"
+      )
+      .forEach((taskHasTimePeriod) => {
+        const [taskTimeStart, taskTimeFormat] = [
+          taskHasTimePeriod.timePeriod.slice(0, 2),
+          taskHasTimePeriod.timePeriod.slice(6, 8),
+        ];
+
+        this.#userCurrentTime = new Date().getHours();
+
+        console.log(
+          `Task Time: ${taskTimeStart}, Task Time Format: ${taskTimeFormat}, User Current Time: ${
+            this.#userCurrentTime
+          }`
+        );
+
+        if (this.#userCurrentTime >= 12) this.#userCurrentTime -= 12;
+
+        if (
+          taskTimeStart - this.#userCurrentTime > 0 &&
+          taskTimeStart - this.#userCurrentTime <= 1
+        )
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted")
+              new Notification("Upcoming Task", {
+                body: `${taskHasTimePeriod.task}`,
+                icon: "../img/icon.png",
+              });
+          });
+      });
+  }
+
+  // Creating new tasks
+  _createTask(e) {
+    e.preventDefault();
+
+    const taskInput = this._checkTaskInput(inputAddTask);
+
+    if (taskInput) {
+      if (
+        this.#currentActivityTasks.some(
+          (currentActivityTask) => currentActivityTask.task === taskInput.value
+        )
+      )
+        this._modalWarning("This text already exists.");
+      else {
+        let task;
+
+        !includeTimePeriod.checked
+          ? (task = new Task(
+              this.#currentActivity.activityType,
+              taskInput.value
+            ))
+          : (task = new Task(
+              this.#currentActivity.activityType,
+              taskInput.value,
+              this._getTimePeriod()
+            ));
+
+        this.#currentActivityTasks.push(task);
+
+        this._saveTasks();
+        this._renderTasks();
+
+        tasksCount.textContent = this._calcTasksCount();
+
+        inputAddTask.value = "";
+
+        this._taskChart();
+        this._comingTask();
+      }
+    }
   }
 }
 
