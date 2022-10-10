@@ -117,6 +117,8 @@ class App {
     year: "numeric",
   }).format(new Date());
 
+  #userCurrentTime;
+
   #colors = {
     primary: getComputedStyle(document.documentElement).getPropertyValue(
       "--bs-primary"
@@ -189,12 +191,9 @@ class App {
     appTaskMain.style.top = this.#appTaskMainTop;
 
     appTaskMain.addEventListener("scroll", () => {
-      console.log(appTaskMain.scrollTop);
-      if (appTaskMain.scrollTop === 0) {
+      if (appTaskMain.scrollTop === 0)
         appTaskMain.style.top = this.#appTaskMainTop;
-      } else {
-        appTaskMain.style.top = "0%";
-      }
+      else appTaskMain.style.top = "0%";
     });
 
     // Starting the timer and getting the current task
@@ -220,11 +219,6 @@ class App {
       }
 
       this._timer("task");
-
-      const hour = this.#currentTask.timePeriod?.slice(0, 5);
-      const hourType = this.#currentTask.timePeriod?.slice(6, 8);
-
-      console.log(hour, hourType);
     });
 
     // Stopping the timer
@@ -362,44 +356,37 @@ class App {
     });
   }
 
-  _getDate = () => `${new Date().getHours()} ${new Date().getMinutes()}`;
-
-  // Sending notification if the time is come close
+  // Sending notification to the user if the time is upcoming
   _comingTask() {
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        const date = this._getDate();
+    this.#currentActivityTasks
+      .filter(
+        (currentActivityTask) =>
+          typeof currentActivityTask.timePeriod !== "undefined"
+      )
+      .forEach((taskHasTimePeriod) => {
+        const [taskTimeStart, taskTimeFormat] = [
+          taskHasTimePeriod.timePeriod.slice(0, 2),
+          taskHasTimePeriod.timePeriod.slice(6, 8),
+        ];
 
-        console.log(date);
+        this.#userCurrentTime = new Date().getHours();
 
-        console.log(this.#currentActivityTasks);
+        console.log(taskTimeStart, taskTimeFormat, this.#userCurrentTime);
 
-        const tasksTimePeriod = this.#currentActivityTasks.filter(
-          (currentActivityTask) =>
-            typeof currentActivityTask.timePeriod !== "undefined"
-        );
+        if (this.#userCurrentTime >= 12) this.#userCurrentTime -= 12;
 
-        console.log(tasksTimePeriod);
-
-        tasksTimePeriod.forEach((taskTimePeriod) => {
-          console.log(taskTimePeriod.timePeriod);
-          console.log(new Date().getHours());
-          const timeFormat = taskTimePeriod.timePeriod.slice(6, 8);
-          console.log(timeFormat);
-
-          if (timeFormat === "AM") {
-          }
-
-          if (timeFormat === "PM") {
-          }
-        });
-
-        new Notification("Task", {
-          body: "Upcoming Task",
-          icon: "../img/icon.png",
-        });
-      }
-    });
+        if (
+          taskTimeStart - this.#userCurrentTime > 0 &&
+          taskTimeStart - this.#userCurrentTime <= 1
+        )
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted")
+              new Notification("Upcoming Task", {
+                body: `${taskHasTimePeriod.task}`,
+                icon: "../img/icon.png",
+              });
+          });
+      });
   }
 
   // Going to the task page
