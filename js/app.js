@@ -371,7 +371,11 @@ class App {
 
         this.#userCurrentTime = new Date().getHours();
 
-        console.log(taskTimeStart, taskTimeFormat, this.#userCurrentTime);
+        console.log(
+          `Task Time: ${taskTimeStart}, Task Time Format: ${taskTimeFormat}, User Current Time: ${
+            this.#userCurrentTime
+          }`
+        );
 
         if (this.#userCurrentTime >= 12) this.#userCurrentTime -= 12;
 
