@@ -383,12 +383,11 @@ class App {
   }
 
   // Saving the tasks to the Local Storage
-  _saveTasks() {
+  _saveTasks = () =>
     localStorage.setItem(
       this.#currentActivity.activityType,
       JSON.stringify(this.#currentActivityTasks)
     );
-  }
 
   // Deleting current task
   _deleteCurrentTask() {
