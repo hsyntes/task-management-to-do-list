@@ -42,6 +42,9 @@ const [
   formAddTask,
   inputAddTask,
   includeTimePeriod,
+  formEditTask,
+  inputEditTask,
+  includeTimeEditPeriod,
   tasks,
 ] = [
   document.querySelector("#app-task-main"),
@@ -52,25 +55,40 @@ const [
   document.querySelector("#tasks-count"),
   document.querySelector("#form-add-task"),
   document.querySelector("#input-add-task"),
-  document.querySelector("#include-time-period"),
+  document.querySelector("#include-time-add-period"),
+  document.querySelector("#form-edit-task"),
+  document.querySelector("#input-edit-task"),
+  document.querySelector("#include-time-edit-period"),
   document.querySelector("#tasks"),
 ];
 
 // Time period elements
 const [
-  selectStartHour,
-  selectStartMinute,
-  selectStartAmPm,
-  selectFinishHour,
-  selectFinishMinute,
-  selectFinishAmPm,
+  selectStartAddHour,
+  selectStartAddMinute,
+  selectStartAddAmPm,
+  selectFinishAddHour,
+  selectFinishAddMinute,
+  selectFinishAddAmPm,
+  selectStartEditHour,
+  selectStartEditMinute,
+  selectStartEditAmPm,
+  selectFinishEditHour,
+  selectFinishEditMinute,
+  selectFinishEditAmPm,
 ] = [
-  document.querySelector("#select-start-hour"),
-  document.querySelector("#select-start-minute"),
-  document.querySelector("#select-start-am-pm"),
-  document.querySelector("#select-finish-hour"),
-  document.querySelector("#select-finish-minute"),
-  document.querySelector("#select-finish-am-pm"),
+  document.querySelector("#select-start-add-hour"),
+  document.querySelector("#select-start-add-minute"),
+  document.querySelector("#select-start-add-am-pm"),
+  document.querySelector("#select-finish-add-hour"),
+  document.querySelector("#select-finish-add-minute"),
+  document.querySelector("#select-finish-add-am-pm"),
+  document.querySelector("#select-start-edit-hour"),
+  document.querySelector("#select-start-edit-minute"),
+  document.querySelector("#select-start-edit-am-pm"),
+  document.querySelector("#select-finish-edit-hour"),
+  document.querySelector("#select-finish-edit-minute"),
+  document.querySelector("#select-finish-edit-am-pm"),
 ];
 
 const ctx = document.querySelector("#task-chart").getContext("2d");
@@ -133,6 +151,9 @@ class App {
     this._getActivites();
 
     btnActivityMenu.addEventListener("click", () => {
+      offcanvasBody.innerHTML = "";
+      $(".offcanvas").offcanvas("show");
+
       const btnDeleteAllActivities = this._createOffcanvasBtns();
 
       btnDeleteAllActivities.innerHTML = `
@@ -229,14 +250,12 @@ class App {
 
       clearInterval(this.#timerInterval);
     });
+
+    formEditTask.addEventListener("submit", this._editTask.bind(this));
   }
 
   // Creating offcanvas buttons
   _createOffcanvasBtns() {
-    $(".offcanvas").offcanvas("show");
-
-    offcanvasBody.innerHTML = "";
-
     const btn = document.createElement("button");
     btn.setAttribute("type", "button");
     btn.setAttribute("data-bs-dismiss", "offcanvas");
@@ -391,11 +410,15 @@ class App {
 
   // Deleting current task
   _deleteCurrentTask() {
-    const indexOfCurrentTask = this.#currentActivityTasks.indexOf(
-      this.#currentTask
+    // const indexOfCurrentTask = this.#currentActivityTasks.indexOf(
+    //   this.#currentTask
+    // );
+
+    const index = this.#currentActivityTasks.findIndex(
+      (currentActivityTask) => currentActivityTask === this.#currentTask
     );
 
-    this.#currentActivityTasks.splice(indexOfCurrentTask, 1);
+    this.#currentActivityTasks.splice(index, 1);
 
     this._saveTasks();
 
@@ -434,6 +457,9 @@ class App {
 
       if (this.#time < 0) {
         if (type === "activity") {
+          offcanvasBody.innerHTML = "";
+          $(".offcanvas").offcanvas("show");
+
           const btnDeleteCurrentActivity = this._createOffcanvasBtns();
           btnDeleteCurrentActivity.innerHTML = `
           <span>
@@ -448,6 +474,23 @@ class App {
         }
 
         if (type === "task") {
+          offcanvasBody.innerHTML = "";
+          $(".offcanvas").offcanvas("show");
+
+          const btnEditCurrentTask = this._createOffcanvasBtns();
+          btnEditCurrentTask.innerHTML = `
+          <span>
+            <i class="fa fa-pencil"></i>
+          </span>
+          <span class="ms-2">Edit this task</span>
+          `;
+          btnEditCurrentTask.setAttribute("data-bs-toggle", "modal");
+          btnEditCurrentTask.setAttribute("data-bs-target", "#modal-edit-task");
+          btnEditCurrentTask.addEventListener(
+            "click",
+            () => (inputEditTask.value = this.#currentTask.task)
+          );
+
           const btnDeleteCurrentTask = this._createOffcanvasBtns();
           btnDeleteCurrentTask.innerHTML = `
           <span>
@@ -522,22 +565,40 @@ class App {
       : input;
 
   // Getting time period (interval)
-  _getTimePeriod = () =>
-    `${selectStartHour.value}:${
-      selectStartMinute.value
-    } ${selectStartAmPm.value.toUpperCase()} - ${selectFinishHour.value}:${
-      selectFinishMinute.value
-    } ${selectFinishAmPm.value.toUpperCase()}`;
+  _getTimePeriod = (type) =>
+    type === "new"
+      ? `${selectStartAddHour.value}:${
+          selectStartAddMinute.value
+        } ${selectStartAddAmPm.value.toUpperCase()} - ${
+          selectFinishAddHour.value
+        }:${
+          selectFinishAddMinute.value
+        } ${selectFinishAddAmPm.value.toUpperCase()}`
+      : `${selectStartEditHour.value}:${
+          selectStartEditMinute.value
+        } ${selectStartEditAmPm.value.toUpperCase()} - ${
+          selectFinishEditHour.value
+        }:${
+          selectFinishEditMinute.value
+        } ${selectFinishEditAmPm.value.toUpperCase()}`;
 
   // Resetting time period
   _clearTimePeriod() {
-    selectStartHour.value =
-      selectStartMinute.value =
-      selectFinishHour.value =
-      selectFinishMinute.value =
+    selectStartAddHour.value =
+      selectStartAddMinute.value =
+      selectFinishAddHour.value =
+      selectFinishAddMinute.value =
+      selectStartEditHour.value =
+      selectStartEditMinute.value =
+      selectFinishEditHour.value =
+      selectFinishEditMinute.value =
         "00";
 
-    selectStartAmPm.value = selectFinishAmPm.value = "AM";
+    selectStartAddAmPm.value =
+      selectFinishAddAmPm.value =
+      selectStartEditAmPm.value =
+      selectFinishEditAmPm.value =
+        "AM";
   }
   // Task chart data by incompleted and completed tasks
   _taskChart() {
@@ -633,6 +694,37 @@ class App {
     });
   }
 
+  // Editing the task
+  _editTask(e) {
+    e.preventDefault();
+
+    const taskInput = this._checkTaskInput(inputEditTask);
+
+    if (taskInput) {
+      let task;
+
+      !includeTimeEditPeriod.checked
+        ? (task = new Task(this.#currentActivity.activityType, taskInput.value))
+        : (task = new Task(
+            this.#currentActivity.activityType,
+            taskInput.value,
+            this._getTimePeriod("edit")
+          ));
+
+      const index = this.#currentActivityTasks.findIndex(
+        (currentActivityTask) => currentActivityTask === this.#currentTask
+      );
+
+      this.#currentActivityTasks[index] = task;
+
+      this._saveTasks();
+      this._renderTasks();
+      this._clearTimePeriod();
+      this._taskChart();
+      this._comingTask();
+    }
+  }
+
   // Creating new tasks
   _createTask(e) {
     e.preventDefault();
@@ -657,7 +749,7 @@ class App {
           : (task = new Task(
               this.#currentActivity.activityType,
               taskInput.value,
-              this._getTimePeriod()
+              this._getTimePeriod("new")
             ));
 
         this.#currentActivityTasks.push(task);
@@ -678,3 +770,9 @@ class App {
 }
 
 const app = new App();
+
+// const array = ["a", "b", "c", "d"];
+// const index = array.findIndex((arr) => arr === "b");
+// console.log(index);
+// array[index] = "f";
+// console.log(array);

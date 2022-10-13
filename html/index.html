@@ -253,8 +253,8 @@
               <div class="my-3">
                 <input
                   type="checkbox"
-                  name="include-time-period"
-                  id="include-time-period"
+                  name="include-time-add-period"
+                  id="include-time-add-period"
                   class="form-check-input"
                   data-bs-toggle="collapse"
                   data-bs-target="#collapse-time-period"
@@ -268,8 +268,8 @@
               <div class="collapse" id="collapse-time-period">
                 <div class="d-flex align-items-center w-75">
                   <select
-                    name="select-start-hour"
-                    id="select-start-hour"
+                    name="select-start-add-hour"
+                    id="select-start-add-hour"
                     class="form-select"
                   >
                     <option value="00">00</option>
@@ -288,8 +288,8 @@
                   </select>
                   <span class="mx-1">:</span>
                   <select
-                    name="select-start-minute"
-                    id="select-start-minute"
+                    name="select-start-add-minute"
+                    id="select-start-add-minute"
                     class="form-select"
                   >
                     <option value="00">00</option>
@@ -297,8 +297,8 @@
                   </select>
                   <span class="mx-1">-</span>
                   <select
-                    name="select-start-am-pm"
-                    id="select-start-am-pm"
+                    name="select-start-add-am-pm"
+                    id="select-start-add-am-pm"
                     class="form-select"
                   >
                     <option value="am">AM</option>
@@ -308,8 +308,8 @@
                 <div class="my-2"></div>
                 <div class="d-flex align-items-center w-75">
                   <select
-                    name="select-finish-hour"
-                    id="select-finish-hour"
+                    name="select-finish-add-hour"
+                    id="select-finish-add-hour"
                     class="form-select"
                   >
                     <option value="00">00</option>
@@ -328,8 +328,8 @@
                   </select>
                   <span class="mx-1">:</span>
                   <select
-                    name="select-finish-minute"
-                    id="select-finish-minute"
+                    name="select-finish-add-minute"
+                    id="select-finish-add-minute"
                     class="form-select"
                   >
                     <option value="00">00</option>
@@ -337,8 +337,8 @@
                   </select>
                   <span class="mx-1">-</span>
                   <select
-                    name="select-finish-am-pm"
-                    id="select-finish-am-pm"
+                    name="select-finish-add-am-pm"
+                    id="select-finish-add-am-pm"
                     class="form-select"
                   >
                     <option value="am">AM</option>
@@ -355,6 +355,138 @@
                 data-bs-dismiss="modal"
               >
                 Add
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modal-edit-task">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded shadow border-0">
+          <div class="modal-header border-0 pb-0">
+            <h6 class="text-primary mb-0">Edit this task</h6>
+            <button type="button" class="btn btn-link" data-bs-dismiss="modal">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <form action="" class="form" id="form-edit-task">
+            <div class="modal-body">
+              <input
+                type="text"
+                name="input-edit-task"
+                id="input-edit-task"
+                class="form-control py-2"
+                placeholder="Edit this task"
+              />
+              <div class="my-3">
+                <input
+                  type="checkbox"
+                  name="include-time-edit-period"
+                  id="include-time-edit-period"
+                  class="form-check-input"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapse-time-edit-period"
+                />
+                <label
+                  for="include-time-edit-period"
+                  class="form-check-label text-muted"
+                  >Include time period</label
+                >
+              </div>
+              <div class="collapse" id="collapse-time-edit-period">
+                <div class="d-flex align-items-center w-75">
+                  <select
+                    name="select-start-edit-hour"
+                    id="select-start-edit-hour"
+                    class="form-select"
+                  >
+                    <option value="00">00</option>
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                  <span class="mx-1">:</span>
+                  <select
+                    name="select-start-edit-minute"
+                    id="select-start-edit-minute"
+                    class="form-select"
+                  >
+                    <option value="00">00</option>
+                    <option value="30">30</option>
+                  </select>
+                  <span class="mx-1">-</span>
+                  <select
+                    name="select-start-edit-am-pm"
+                    id="select-start-edit-am-pm"
+                    class="form-select"
+                  >
+                    <option value="am">AM</option>
+                    <option value="pm">PM</option>
+                  </select>
+                </div>
+                <div class="my-2"></div>
+                <div class="d-flex align-items-center w-75">
+                  <select
+                    name="select-finish-edit-hour"
+                    id="select-finish-edit-hour"
+                    class="form-select"
+                  >
+                    <option value="00">00</option>
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                  <span class="mx-1">:</span>
+                  <select
+                    name="select-finish-edit-minute"
+                    id="select-finish-edit-minute"
+                    class="form-select"
+                  >
+                    <option value="00">00</option>
+                    <option value="30">30</option>
+                  </select>
+                  <span class="mx-1">-</span>
+                  <select
+                    name="select-finish-edit-am-pm"
+                    id="select-finish-edit-am-pm"
+                    class="form-select"
+                  >
+                    <option value="am">AM</option>
+                    <option value="pm">PM</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+              <button
+                type="submit"
+                class="btn btn-primary py-2 px-4"
+                id="btn-edit-task"
+                data-bs-dismiss="modal"
+              >
+                <span>
+                  <i class="fa fa-pencil"></i>
+                </span>
+                <span>Edit</span>
               </button>
             </div>
           </form>
