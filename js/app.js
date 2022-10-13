@@ -604,33 +604,34 @@ class App {
 
   // Sending notification to the user if the time is upcoming
   _comingTask() {
-    this.#currentActivityTasks
-      .filter(
-        (currentActivityTask) =>
-          typeof currentActivityTask.timePeriod !== "undefined"
-      )
-      .forEach((taskHasTimePeriod) => {
-        const [taskTimeStart, taskTimeFormat] = [
-          taskHasTimePeriod.timePeriod.slice(0, 2),
-          taskHasTimePeriod.timePeriod.slice(6, 8),
-        ];
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        this.#currentActivityTasks
+          .filter(
+            (currentActivityTask) =>
+              typeof currentActivityTask.timePeriod !== "undefined"
+          )
+          .forEach((taskHasTimePeriod) => {
+            const [taskTimeStart, taskTimeFormat] = [
+              taskHasTimePeriod.timePeriod.slice(0, 2),
+              taskHasTimePeriod.timePeriod.slice(6, 8),
+            ];
 
-        this.#userCurrentTime = new Date().getHours();
+            this.#userCurrentTime = new Date().getHours();
 
-        if (this.#userCurrentTime >= 12) this.#userCurrentTime -= 12;
+            if (this.#userCurrentTime >= 12) this.#userCurrentTime -= 12;
 
-        if (
-          taskTimeStart - this.#userCurrentTime > 0 &&
-          taskTimeStart - this.#userCurrentTime <= 1
-        )
-          Notification.requestPermission().then((permission) => {
-            if (permission === "granted")
+            if (
+              taskTimeStart - this.#userCurrentTime > 0 &&
+              taskTimeStart - this.#userCurrentTime <= 1
+            )
               new Notification("Upcoming Task", {
                 body: `${taskHasTimePeriod.task}`,
                 icon: "../img/icon.png",
               });
           });
-      });
+      }
+    });
   }
 
   // Creating new tasks
