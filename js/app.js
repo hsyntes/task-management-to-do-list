@@ -454,7 +454,7 @@ class App {
           <span>
             <i class="fa fa-trash-o"></i>
           </span>
-          <span class="ms-2">Delete this activity</span>
+          <span class="ms-2">Delete this task</span>
           `;
 
           btnDeleteCurrentTask.addEventListener("click", () => {
@@ -530,6 +530,16 @@ class App {
       selectFinishMinute.value
     } ${selectFinishAmPm.value.toUpperCase()}`;
 
+  // Resetting time period
+  _clearTimePeriod() {
+    selectStartHour.value =
+      selectStartMinute.value =
+      selectFinishHour.value =
+      selectFinishMinute.value =
+        "00";
+
+    selectStartAmPm.value = selectFinishAmPm.value = "AM";
+  }
   // Task chart data by incompleted and completed tasks
   _taskChart() {
     const completedTasks = this.#currentActivityTasks.filter(
@@ -659,6 +669,7 @@ class App {
 
         inputAddTask.value = "";
 
+        this._clearTimePeriod();
         this._taskChart();
         this._comingTask();
       }
