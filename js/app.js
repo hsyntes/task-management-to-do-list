@@ -770,9 +770,3 @@ class App {
 }
 
 const app = new App();
-
-// const array = ["a", "b", "c", "d"];
-// const index = array.findIndex((arr) => arr === "b");
-// console.log(index);
-// array[index] = "f";
-// console.log(array);
