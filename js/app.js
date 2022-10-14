@@ -63,7 +63,7 @@ const [
 ];
 
 // Time period elements
-const [
+let [
   selectStartAddHour,
   selectStartAddMinute,
   selectStartAddAmPm,
@@ -206,7 +206,7 @@ class App {
       this._modalConfirm("tasks");
     });
 
-    formAddTask.addEventListener("submit", this._createTask.bind(this));
+    formAddTask.addEventListener("submit", this._addTask.bind(this));
 
     // Setting default margin-top value for main element which position is fixed
     appTaskMain.style.top = this.#appTaskMainTop;
@@ -389,7 +389,7 @@ class App {
 
     this._renderTasks();
     this._taskChart();
-    this._comingTask();
+    this._upcomingTask();
   }
 
   // Deleting all the tasks for current activity
@@ -486,10 +486,41 @@ class App {
           `;
           btnEditCurrentTask.setAttribute("data-bs-toggle", "modal");
           btnEditCurrentTask.setAttribute("data-bs-target", "#modal-edit-task");
-          btnEditCurrentTask.addEventListener(
-            "click",
-            () => (inputEditTask.value = this.#currentTask.task)
-          );
+          btnEditCurrentTask.addEventListener("click", () => {
+            inputEditTask.value = this.#currentTask.task;
+
+            if (this.#currentTask.timePeriod) {
+              const taskTimePeriod = this.#currentTask.timePeriod.split("-");
+              const [taskStarts, taskFinishs] = [...taskTimePeriod];
+
+              const [
+                taskStartHour,
+                taskStartMinute,
+                taskStartAmPm,
+                taskFinishHour,
+                taskFinishMinute,
+                taskFinishAmPm,
+              ] = [
+                taskStarts.slice(0, 2),
+                taskStarts.slice(3, 5),
+                taskStarts.slice(6, 8),
+                taskFinishs.trim().slice(0, 2),
+                taskFinishs.trim().slice(3, 5),
+                taskFinishs.trim().slice(6, 8),
+              ];
+
+              console.log(taskStartAmPm);
+              console.log(taskFinishAmPm);
+
+              selectStartEditHour.value = taskStartHour;
+              selectStartEditMinute.value = taskStartMinute;
+              selectStartEditAmPm = taskStartAmPm;
+
+              selectFinishEditHour.value = taskFinishHour;
+              selectFinishEditMinute.value = taskFinishMinute;
+              selectFinishEditAmPm = taskFinishAmPm;
+            }
+          });
 
           const btnDeleteCurrentTask = this._createOffcanvasBtns();
           btnDeleteCurrentTask.innerHTML = `
@@ -594,12 +625,10 @@ class App {
       selectFinishEditMinute.value =
         "00";
 
-    selectStartAddAmPm.value =
-      selectFinishAddAmPm.value =
-      selectStartEditAmPm.value =
-      selectFinishEditAmPm.value =
-        "AM";
+    selectStartAddAmPm = selectFinishAddAmPm = "AM";
+    selectStartEditAmPm = selectFinishEditAmPm = "AM";
   }
+
   // Task chart data by incompleted and completed tasks
   _taskChart() {
     const completedTasks = this.#currentActivityTasks.filter(
@@ -663,7 +692,7 @@ class App {
   }
 
   // Sending notification to the user if the time is upcoming
-  _comingTask() {
+  _upcomingTask() {
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
         this.#currentActivityTasks
@@ -721,12 +750,12 @@ class App {
       this._renderTasks();
       this._clearTimePeriod();
       this._taskChart();
-      this._comingTask();
+      this._upcomingTask();
     }
   }
 
   // Creating new tasks
-  _createTask(e) {
+  _addTask(e) {
     e.preventDefault();
 
     const taskInput = this._checkTaskInput(inputAddTask);
@@ -763,7 +792,7 @@ class App {
 
         this._clearTimePeriod();
         this._taskChart();
-        this._comingTask();
+        this._upcomingTask();
       }
     }
   }
