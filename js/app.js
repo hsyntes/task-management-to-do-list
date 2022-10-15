@@ -724,12 +724,11 @@ class App {
     this.#taskChart.update();
   }
 
-  _sendNotification(task) {
+  _sendNotification = (task) =>
     new Notification("Upcoming Task", {
       body: `${task}`,
       icon: "../img/icon.png",
     });
-  }
 
   // Sending notification to the user if the time is upcoming
   _upcomingTask() {
