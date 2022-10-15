@@ -41,10 +41,8 @@ const [
   tasksCount,
   formAddTask,
   inputAddTask,
-  includeTimePeriod,
   formEditTask,
   inputEditTask,
-  includeTimeEditPeriod,
   tasks,
 ] = [
   document.querySelector("#app-task-main"),
@@ -55,21 +53,33 @@ const [
   document.querySelector("#tasks-count"),
   document.querySelector("#form-add-task"),
   document.querySelector("#input-add-task"),
-  document.querySelector("#include-time-add-period"),
   document.querySelector("#form-edit-task"),
   document.querySelector("#input-edit-task"),
-  document.querySelector("#include-time-edit-period"),
   document.querySelector("#tasks"),
 ];
 
-// Time period elements
-let [
+// Time period elements for adding new tasks
+const [
+  includeTimeAddPeriod,
   selectStartAddHour,
   selectStartAddMinute,
   selectStartAddAmPm,
   selectFinishAddHour,
   selectFinishAddMinute,
   selectFinishAddAmPm,
+] = [
+  document.querySelector("#include-time-add-period"),
+  document.querySelector("#select-start-add-hour"),
+  document.querySelector("#select-start-add-minute"),
+  document.querySelector("#select-start-add-am-pm"),
+  document.querySelector("#select-finish-add-hour"),
+  document.querySelector("#select-finish-add-minute"),
+  document.querySelector("#select-finish-add-am-pm"),
+];
+
+// Time period elements for editing the tasks
+const [
+  includeTimeEditPeriod,
   selectStartEditHour,
   selectStartEditMinute,
   selectStartEditAmPm,
@@ -77,12 +87,7 @@ let [
   selectFinishEditMinute,
   selectFinishEditAmPm,
 ] = [
-  document.querySelector("#select-start-add-hour"),
-  document.querySelector("#select-start-add-minute"),
-  document.querySelector("#select-start-add-am-pm"),
-  document.querySelector("#select-finish-add-hour"),
-  document.querySelector("#select-finish-add-minute"),
-  document.querySelector("#select-finish-add-am-pm"),
+  document.querySelector("#include-time-edit-period"),
   document.querySelector("#select-start-edit-hour"),
   document.querySelector("#select-start-edit-minute"),
   document.querySelector("#select-start-edit-am-pm"),
@@ -450,7 +455,7 @@ class App {
 
   // The timer function
   _timer(type) {
-    this.#time = 1.5;
+    this.#time = 1;
 
     const tick = () => {
       this.#time--;
@@ -490,8 +495,16 @@ class App {
             inputEditTask.value = this.#currentTask.task;
 
             if (this.#currentTask.timePeriod) {
+              includeTimeEditPeriod.checked = true;
+
+              document
+                .querySelector("#collapse-time-edit-period")
+                .classList.add("show");
+
               const taskTimePeriod = this.#currentTask.timePeriod.split("-");
               const [taskStarts, taskFinishs] = [...taskTimePeriod];
+
+              console.log(taskStarts, taskFinishs);
 
               const [
                 taskStartHour,
@@ -509,16 +522,30 @@ class App {
                 taskFinishs.trim().slice(6, 8),
               ];
 
-              console.log(taskStartAmPm);
-              console.log(taskFinishAmPm);
+              [
+                selectStartEditHour.value,
+                selectStartEditMinute.value,
+                selectStartEditAmPm.value,
 
-              selectStartEditHour.value = taskStartHour;
-              selectStartEditMinute.value = taskStartMinute;
-              selectStartEditAmPm = taskStartAmPm;
+                selectFinishEditHour.value,
+                selectFinishEditMinute.value,
+                selectFinishEditAmPm.value,
+              ] = [
+                taskStartHour,
+                taskStartMinute,
+                taskStartAmPm.toLowerCase(),
+                taskFinishHour,
+                taskFinishMinute,
+                taskFinishAmPm.toLowerCase(),
+              ];
+            } else {
+              includeTimeEditPeriod.checked = false;
 
-              selectFinishEditHour.value = taskFinishHour;
-              selectFinishEditMinute.value = taskFinishMinute;
-              selectFinishEditAmPm = taskFinishAmPm;
+              document
+                .querySelector("#collapse-time-edit-period")
+                .classList.remove("show");
+
+              this._clearTimePeriod();
             }
           });
 
@@ -615,18 +642,19 @@ class App {
 
   // Resetting time period
   _clearTimePeriod() {
-    selectStartAddHour.value =
-      selectStartAddMinute.value =
-      selectFinishAddHour.value =
-      selectFinishAddMinute.value =
-      selectStartEditHour.value =
-      selectStartEditMinute.value =
-      selectFinishEditHour.value =
-      selectFinishEditMinute.value =
-        "00";
+    selectStartAddHour.selectedIndex =
+      selectStartAddMinute.selectedIndex =
+      selectFinishAddHour.selectedIndex =
+      selectFinishAddMinute.selectedIndex =
+      selectStartAddAmPm.selectedIndex =
+      selectFinishAddAmPm.selectedIndex =
+        0;
 
-    selectStartAddAmPm = selectFinishAddAmPm = "AM";
-    selectStartEditAmPm = selectFinishEditAmPm = "AM";
+    includeTimeAddPeriod.checked = false;
+
+    document
+      .querySelector("#collapse-time-add-period")
+      .classList.remove("show");
   }
 
   // Task chart data by incompleted and completed tasks
@@ -770,7 +798,7 @@ class App {
       else {
         let task;
 
-        !includeTimePeriod.checked
+        !includeTimeAddPeriod.checked
           ? (task = new Task(
               this.#currentActivity.activityType,
               taskInput.value
