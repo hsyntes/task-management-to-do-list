@@ -140,7 +140,10 @@ class App {
     year: "numeric",
   }).format(new Date());
 
-  #userCurrentTime;
+  #userCurrentHour;
+  #userCurrentMinute;
+  #taskTimeAM = [];
+  #taskTimePM = [];
 
   #colors = {
     primary: getComputedStyle(document.documentElement).getPropertyValue(
@@ -385,6 +388,8 @@ class App {
     this._switchPages(appActivity, appTask);
 
     this.#currentActivityTasks = [];
+    this.#taskTimeAM = [];
+    this.#taskTimePM = [];
 
     this._getCurrentActivityTasks();
 
@@ -719,6 +724,13 @@ class App {
     this.#taskChart.update();
   }
 
+  _sendNotification(task) {
+    new Notification("Upcoming Task", {
+      body: `${task}`,
+      icon: "../img/icon.png",
+    });
+  }
+
   // Sending notification to the user if the time is upcoming
   _upcomingTask() {
     Notification.requestPermission().then((permission) => {
@@ -729,23 +741,28 @@ class App {
               typeof currentActivityTask.timePeriod !== "undefined"
           )
           .forEach((taskHasTimePeriod) => {
-            const [taskTimeStart, taskTimeFormat] = [
+            let [taskStartHour, taskStartMinute, taskTimeFormat] = [
               taskHasTimePeriod.timePeriod.slice(0, 2),
-              taskHasTimePeriod.timePeriod.slice(6, 8),
+              taskHasTimePeriod.timePeriod.trim().slice(3, 5),
+              taskHasTimePeriod.timePeriod.trim().slice(6, 8),
             ];
 
-            this.#userCurrentTime = new Date().getHours();
+            this.#userCurrentHour = new Date().getHours();
 
-            if (this.#userCurrentTime >= 12) this.#userCurrentTime -= 12;
+            if (taskTimeFormat === "AM" && this.#userCurrentHour < 12) {
+              this.#taskTimeAM.push(taskHasTimePeriod);
 
-            if (
-              taskTimeStart - this.#userCurrentTime > 0 &&
-              taskTimeStart - this.#userCurrentTime <= 1
-            )
-              new Notification("Upcoming Task", {
-                body: `${taskHasTimePeriod.task}`,
-                icon: "../img/icon.png",
-              });
+              if (this.#userCurrentHour === Number(taskStartHour))
+                this._sendNotification(taskHasTimePeriod.task);
+            }
+
+            if (taskTimeFormat === "PM" && this.#userCurrentHour >= 12) {
+              this.#taskTimePM.push(taskHasTimePeriod);
+              taskStartHour = Number(taskStartHour) + 12;
+
+              if (this.#userCurrentHour === Number(taskStartHour))
+                this._sendNotification(taskHasTimePeriod.task);
+            }
           });
       }
     });
