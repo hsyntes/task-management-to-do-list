@@ -754,6 +754,29 @@ class App {
 
             if (taskTimeFormat === "AM" && this.#userCurrentHour < 12) {
               this.#taskTimeAM.push(taskHasTimePeriod);
+
+              if (
+                Number(taskStartHour) - this.#userCurrentHour === 1 &&
+                this.#userCurrentMinute >= 30
+              ) {
+                if (60 - this.#userCurrentMinute <= 10)
+                  this._sendNotification(
+                    taskHasTimePeriod.task,
+                    60 - this.#userCurrentMinute
+                  );
+              }
+
+              if (
+                this.#userCurrentHour === Number(taskStartHour) &&
+                this.#userCurrentMinute < 30 &&
+                Number(taskStartMinute) === 30
+              ) {
+                if (Number(taskStartMinute) - this.#userCurrentMinute <= 10)
+                  this._sendNotification(
+                    taskHasTimePeriod.task,
+                    Number(taskStartMinute) - this.#userCurrentMinute
+                  );
+              }
             }
 
             if (taskTimeFormat === "PM" && this.#userCurrentHour >= 12) {
