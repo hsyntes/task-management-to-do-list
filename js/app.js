@@ -509,8 +509,6 @@ class App {
               const taskTimePeriod = this.#currentTask.timePeriod.split("-");
               const [taskStarts, taskFinishs] = [...taskTimePeriod];
 
-              console.log(taskStarts, taskFinishs);
-
               const [
                 taskStartHour,
                 taskStartMinute,
@@ -724,11 +722,16 @@ class App {
     this.#taskChart.update();
   }
 
-  _sendNotification = (task) =>
-    new Notification("Upcoming Task", {
-      body: `${task}`,
-      icon: "../img/icon.png",
-    });
+  _sendNotification = (task, time) =>
+    new Notification(
+      `Upcoming Task, ${
+        time === 0 ? "it's time to start right now!" : `last ${time} minutes!`
+      }`,
+      {
+        body: `${task}`,
+        icon: "../img/icon.png",
+      }
+    );
 
   // Sending notification to the user if the time is upcoming
   _upcomingTask() {
@@ -747,20 +750,39 @@ class App {
             ];
 
             this.#userCurrentHour = new Date().getHours();
+            this.#userCurrentMinute = new Date().getMinutes();
 
             if (taskTimeFormat === "AM" && this.#userCurrentHour < 12) {
               this.#taskTimeAM.push(taskHasTimePeriod);
-
-              if (this.#userCurrentHour === Number(taskStartHour))
-                this._sendNotification(taskHasTimePeriod.task);
             }
 
             if (taskTimeFormat === "PM" && this.#userCurrentHour >= 12) {
-              this.#taskTimePM.push(taskHasTimePeriod);
               taskStartHour = Number(taskStartHour) + 12;
 
-              if (this.#userCurrentHour === Number(taskStartHour))
-                this._sendNotification(taskHasTimePeriod.task);
+              this.#taskTimePM.push(taskHasTimePeriod);
+
+              if (
+                Number(taskStartHour) - this.#userCurrentHour === 1 &&
+                this.#userCurrentMinute >= 30
+              ) {
+                if (60 - this.#userCurrentMinute <= 10)
+                  this._sendNotification(
+                    taskHasTimePeriod.task,
+                    60 - this.#userCurrentMinute
+                  );
+              }
+
+              if (
+                this.#userCurrentHour === Number(taskStartHour) &&
+                this.#userCurrentMinute < 30 &&
+                Number(taskStartMinute) === 30
+              ) {
+                if (Number(taskStartMinute) - this.#userCurrentMinute <= 10)
+                  this._sendNotification(
+                    taskHasTimePeriod.task,
+                    Number(taskStartMinute) - this.#userCurrentMinute
+                  );
+              }
             }
           });
       }
