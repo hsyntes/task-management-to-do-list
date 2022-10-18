@@ -22,7 +22,6 @@ class Task extends Activity {
 }
 
 // The HTML Elements
-
 // The App Activity's Elements
 const [appActivity, btnActivityMenu, selectActivity, activities] = [
   document.querySelector("#app-activity"),
@@ -62,7 +61,7 @@ const [
   document.querySelector("#btn-search-task"),
 ];
 
-// Time period elements for adding new tasks
+// The time period elements for adding tasks
 const [
   includeTimeAddPeriod,
   selectStartAddHour,
@@ -81,7 +80,7 @@ const [
   document.querySelector("#select-finish-add-am-pm"),
 ];
 
-// Time period elements for editing the tasks
+// The time period elements for edting the tasks
 const [
   includeTimeEditPeriod,
   selectStartEditHour,
@@ -100,17 +99,16 @@ const [
   document.querySelector("#select-finish-edit-am-pm"),
 ];
 
-// Task search element(s)
-// const inputSearchTask = document.querySelector("#input-search-task");
-// const searchedTask = document.querySelector("#searched-tasks");
-
+// The Modal-search-task elements
 const [inputSearchTask, searchedTasks] = [
   document.querySelector("#input-search-task"),
   document.querySelector("#searched-tasks"),
 ];
 
+// The task chart element
 const ctx = document.querySelector("#task-chart").getContext("2d");
 
+// The Offcanvas element
 const offcanvasBody = document.querySelector(".offcanvas-body");
 
 // The App Class
@@ -346,8 +344,8 @@ class App {
 
   // Deleting the current activity
   _deleteCurrentActivity() {
-    const indexOfCurrentActivity = this.#activities.indexOf(
-      this.#currentActivity
+    const indexOfCurrentActivity = this.#activities.findIndex(
+      (activity) => activity === this.#currentActivity
     );
 
     this.#activities.splice(indexOfCurrentActivity, 1);
@@ -451,11 +449,11 @@ class App {
 
   // Deleting current task
   _deleteCurrentTask() {
-    const index = this.#currentActivityTasks.findIndex(
+    const indexOfCurrentTask = this.#currentActivityTasks.findIndex(
       (currentActivityTask) => currentActivityTask === this.#currentTask
     );
 
-    this.#currentActivityTasks.splice(index, 1);
+    this.#currentActivityTasks.splice(indexOfCurrentTask, 1);
 
     this._saveTasks();
 
@@ -751,6 +749,7 @@ class App {
     this.#taskChart.update();
   }
 
+  // Sending notification to the user
   _sendNotification = (task, time) =>
     new Notification(
       `Upcoming Task, ${
@@ -762,7 +761,7 @@ class App {
       }
     );
 
-  // Sending notification to the user if the time is upcoming
+  // Checking upcoming of the task time
   _upcomingTask() {
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
@@ -859,11 +858,11 @@ class App {
             this._getTimePeriod("edit")
           ));
 
-      const index = this.#currentActivityTasks.findIndex(
+      const indexOfCurrentTask = this.#currentActivityTasks.findIndex(
         (currentActivityTask) => currentActivityTask === this.#currentTask
       );
 
-      this.#currentActivityTasks[index] = task;
+      this.#currentActivityTasks[indexOfCurrentTask] = task;
 
       this._saveTasks();
       this._renderTasks();
@@ -916,6 +915,7 @@ class App {
     }
   }
 
+  // Rendering the searched tasks
   _renderSearchedTask(searchedTask) {
     searchedTasks.innerHTML = "";
 
@@ -967,6 +967,7 @@ class App {
     this._upcomingTask();
   }
 
+  // Searching tasks by input value
   _searchedTask() {
     const searchedTask = inputSearchTask;
 
