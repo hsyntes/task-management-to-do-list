@@ -11035,6 +11035,11 @@ body {
 .container .app #app-task main .task input:checked + label {
   text-decoration: line-through;
 }
+.container .app #app-activity footer #btn-search-task,
+.container .app #app-task footer #btn-search-task {
+  transform: translateY(200%);
+  transition: all 0.3s ease-out;
+}
 
 @-webkit-keyframes dropdown-menu-fade-transition {
   0% {

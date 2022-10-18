@@ -33,8 +33,8 @@ const [appActivity, btnActivityMenu, selectActivity, activities] = [
 
 // The App Task's Elements
 const [
-  appTaskMain,
   appTask,
+  appTaskMain,
   btnGoToAppActivity,
   appTaskTitle,
   btnDeleteAllTasks,
@@ -44,9 +44,11 @@ const [
   formEditTask,
   inputEditTask,
   tasks,
+  currentTasks,
+  btnSearchTask,
 ] = [
-  document.querySelector("#app-task-main"),
   document.querySelector("#app-task"),
+  document.querySelector("#app-task-main"),
   document.querySelector("#btn-go-to-app-acitivty"),
   document.querySelector("#app-task-title"),
   document.querySelector("#btn-delete-all-tasks"),
@@ -55,7 +57,9 @@ const [
   document.querySelector("#input-add-task"),
   document.querySelector("#form-edit-task"),
   document.querySelector("#input-edit-task"),
-  document.querySelector("#tasks"),
+  document.querySelectorAll(".tasks"),
+  document.querySelector("#current-tasks"),
+  document.querySelector("#btn-search-task"),
 ];
 
 // Time period elements for adding new tasks
@@ -94,6 +98,15 @@ const [
   document.querySelector("#select-finish-edit-hour"),
   document.querySelector("#select-finish-edit-minute"),
   document.querySelector("#select-finish-edit-am-pm"),
+];
+
+// Task search element(s)
+// const inputSearchTask = document.querySelector("#input-search-task");
+// const searchedTask = document.querySelector("#searched-tasks");
+
+const [inputSearchTask, searchedTasks] = [
+  document.querySelector("#input-search-task"),
+  document.querySelector("#searched-tasks"),
 ];
 
 const ctx = document.querySelector("#task-chart").getContext("2d");
@@ -206,8 +219,13 @@ class App {
 
     // Going to the app activity page
     btnGoToAppActivity.addEventListener("click", () => {
-      this._switchPages(appTask, appActivity);
-      appTaskMain.style.position = "block";
+      btnSearchTask.style.transform = "translateY(200%)";
+
+      setTimeout(() => {
+        btnSearchTask.classList.add("d-none");
+        this._switchPages(appTask, appActivity);
+        appTaskMain.style.position = "block";
+      }, 300);
     });
 
     btnDeleteAllTasks.addEventListener("click", () => {
@@ -219,6 +237,7 @@ class App {
     // Setting default margin-top value for main element which position is fixed
     appTaskMain.style.top = this.#appTaskMainTop;
 
+    // When appTaskMain scrolled
     appTaskMain.addEventListener("scroll", () => {
       if (appTaskMain.scrollTop === 0)
         appTaskMain.style.top = this.#appTaskMainTop;
@@ -226,40 +245,47 @@ class App {
     });
 
     // Starting the timer and getting the current task
-    tasks.addEventListener("mousedown", (e) => {
-      const taskHTML = e.target.closest(".task");
+    tasks.forEach((task) => {
+      task.addEventListener("mousedown", (e) => {
+        const taskHTML = e.target.closest(".task");
 
-      if (!taskHTML) return;
+        if (!taskHTML) return;
 
-      this.#currentTask = this.#currentActivityTasks.find(
-        (currentActivityTask) =>
-          currentActivityTask.task ===
-          taskHTML.children[0].lastElementChild.textContent.trim()
-      );
+        this.#currentTask = this.#currentActivityTasks.find(
+          (currentActivityTask) =>
+            currentActivityTask.task ===
+            taskHTML.children[0].lastElementChild.textContent.trim()
+        );
 
-      if (e.target.classList.contains("form-check-input")) {
-        const input = e.target;
+        if (e.target.classList.contains("form-check-input")) {
+          const input = e.target;
 
-        if (!input.checked) this.#currentTask.checked = true;
-        else this.#currentTask.checked = false;
+          if (!input.checked) this.#currentTask.checked = true;
+          else this.#currentTask.checked = false;
 
-        this._saveTasks();
-        this._taskChart();
-      }
+          this._saveTasks();
+          this._renderTasks();
+          this._taskChart();
+        }
 
-      this._timer("task");
+        this._timer("task");
+      });
     });
 
     // Stopping the timer
-    tasks.addEventListener("mouseup", (e) => {
-      const taskHTML = e.target.closest(".task");
+    tasks.forEach((task) => {
+      task.addEventListener("mouseup", (e) => {
+        const taskHTML = e.target.closest(".task");
 
-      if (!taskHTML) return;
+        if (!taskHTML) return;
 
-      clearInterval(this.#timerInterval);
+        clearInterval(this.#timerInterval);
+      });
     });
 
     formEditTask.addEventListener("submit", this._editTask.bind(this));
+
+    inputSearchTask.addEventListener("keyup", this._searchedTask.bind(this));
   }
 
   // Creating offcanvas buttons
@@ -352,10 +378,10 @@ class App {
 
   // Rendering the tasks
   _renderTasks() {
-    tasks.innerHTML = "";
+    currentTasks.innerHTML = "";
 
     this.#currentActivityTasks.forEach((currentActivityTask, index) => {
-      let html = `
+      const html = `
         <div class="task w-100 btn-link rounded shadow p-4 mt-4">
           <span>
             <input
@@ -379,7 +405,7 @@ class App {
         </div>
           `;
 
-      tasks.insertAdjacentHTML("afterbegin", html);
+      currentTasks.insertAdjacentHTML("afterbegin", html);
     });
   }
 
@@ -396,6 +422,11 @@ class App {
     appTaskTitle.textContent = this.#dateTimeFormat;
     tasksCount.textContent = this._calcTasksCount();
     appTaskMain.style.position = "fixed";
+
+    btnSearchTask.classList.remove("d-none");
+    setTimeout(() => {
+      btnSearchTask.style.transform = "translateY(0%)";
+    }, 300);
 
     this._renderTasks();
     this._taskChart();
@@ -420,10 +451,6 @@ class App {
 
   // Deleting current task
   _deleteCurrentTask() {
-    // const indexOfCurrentTask = this.#currentActivityTasks.indexOf(
-    //   this.#currentTask
-    // );
-
     const index = this.#currentActivityTasks.findIndex(
       (currentActivityTask) => currentActivityTask === this.#currentTask
     );
@@ -485,7 +512,9 @@ class App {
 
         if (type === "task") {
           offcanvasBody.innerHTML = "";
+
           $(".offcanvas").offcanvas("show");
+          $("#modal-search-task").modal("hide");
 
           const btnEditCurrentTask = this._createOffcanvasBtns();
           btnEditCurrentTask.innerHTML = `
@@ -740,7 +769,8 @@ class App {
         this.#currentActivityTasks
           .filter(
             (currentActivityTask) =>
-              typeof currentActivityTask.timePeriod !== "undefined"
+              typeof currentActivityTask.timePeriod !== "undefined" &&
+              currentActivityTask.checked === true
           )
           .forEach((taskHasTimePeriod) => {
             let [taskStartHour, taskStartMinute, taskTimeFormat] = [
@@ -884,6 +914,64 @@ class App {
         this._upcomingTask();
       }
     }
+  }
+
+  _renderSearchedTask(searchedTask) {
+    searchedTasks.innerHTML = "";
+
+    searchedTask.value === ""
+      ? (searchedTasks.innerHTML = "")
+      : this.#currentActivityTasks.forEach((currentActivityTask, index) => {
+          if (
+            currentActivityTask.task
+              .toLowerCase()
+              .startsWith(searchedTask.value.toLowerCase()) ||
+            currentActivityTask.task
+              .toLowerCase()
+              .includes(searchedTask.value.toLowerCase())
+          ) {
+            const html = `
+          <div class="task w-100 btn-link rounded shadow p-4 mt-4">
+            <span>
+              <input
+                type="checkbox"
+                name="checkbox-task-${index}"
+                id="checkbox-task-${index}"
+                class="form-check-input"
+                ${currentActivityTask.checked ? "checked" : ""}
+              />
+              <label for="" class="text-primary ms-2">${
+                currentActivityTask.task
+              }</label>
+            </span>
+            ${
+              currentActivityTask.timePeriod
+                ? `<span class="d-flex text-muted"
+                    style="font-size: 14px"
+                  >
+                    ${currentActivityTask.timePeriod}
+                  </span>`
+                : `<span class="d-none"></span>`
+            }
+          </div>
+            `;
+
+            searchedTasks.insertAdjacentHTML("afterbegin", html);
+          }
+        });
+
+    this._saveTasks();
+    this._renderTasks();
+    this._clearTimePeriod();
+    this._taskChart();
+    this._upcomingTask();
+  }
+
+  _searchedTask() {
+    const searchedTask = inputSearchTask;
+
+    this._getCurrentActivityTasks();
+    this._renderSearchedTask(searchedTask);
   }
 }
 

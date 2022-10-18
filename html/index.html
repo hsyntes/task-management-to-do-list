@@ -124,26 +124,24 @@
                   id="task-chart-info"
                 ></div>
               </div>
-              <div class="mt-5" id="tasks"></div>
+              <div class="tasks mt-5" id="current-tasks"></div>
               <section class="app-area"></section>
               <section class="app-area"></section>
               <section class="app-area"></section>
               <section class="app-area"></section>
               <section class="app-area"></section>
             </main>
-          </div>
-          <div
-            class="offcanvas offcanvas-bottom col-lg-4 col-md-6 col-sm-8 mx-auto rounded-top shadow border-0"
-            id="offcanvas-bottom-menu"
-            style="height: auto"
-          >
-            <div class="offcanvas-header">
-              <div
-                class="bg-primary rounded-pill shadow w-25 m-auto"
-                style="padding: 2px"
-              ></div>
-            </div>
-            <div class="offcanvas-body"></div>
+            <footer class="position-absolute p-4" style="right: 0; bottom: 0">
+              <button
+                type="button"
+                class="btn btn-primary rounded shadow py-2 px-3 d-none"
+                id="btn-search-task"
+                data-bs-toggle="modal"
+                data-bs-target="#modal-search-task"
+              >
+                <i class="fa fa-search"></i>
+              </button>
+            </footer>
           </div>
         </div>
       </div>
@@ -558,6 +556,52 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="modal fade" id="modal-search-task">
+      <div
+        class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-md-down"
+      >
+        <div class="modal-content rounded shadow">
+          <div class="modal-header border-0">
+            <div id="search-box" class="position-relative w-100">
+              <input
+                type="text"
+                name="input-search-task"
+                id="input-search-task"
+                class="form-control py-2"
+                placeholder="Search task"
+              />
+              <i
+                class="fa fa-search text-primary position-absolute pe-1"
+                style="top: 50%; right: 0%; transform: translate(-50%, -50%)"
+              ></i>
+            </div>
+          </div>
+          <div class="modal-body tasks" id="searched-tasks"></div>
+          <div class="modal-footer border-0">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="offcanvas offcanvas-bottom col-lg-4 col-md-6 col-sm-8 mx-auto rounded-top shadow border-0"
+      id="offcanvas-bottom-menu"
+      style="height: auto"
+    >
+      <div class="offcanvas-header">
+        <div
+          class="bg-primary rounded-pill shadow w-25 m-auto"
+          style="padding: 2px"
+        ></div>
+      </div>
+      <div class="offcanvas-body"></div>
     </div>
     <script
       src="https://kit.fontawesome.com/42bec294e9.js"
