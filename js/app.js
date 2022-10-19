@@ -800,7 +800,7 @@ class App {
                 this.#userCurrentMinute < 30 &&
                 Number(taskStartMinute) === 30
               ) {
-                if (Number(taskStartMinute) - this.#userCurrentMinute <= 10)
+                if (Number(taskStartMinute) - this.#userCurrentMinute <= 30)
                   this._sendNotification(
                     taskHasTimePeriod.task,
                     Number(taskStartMinute) - this.#userCurrentMinute
@@ -817,7 +817,7 @@ class App {
                 Number(taskStartHour) - this.#userCurrentHour === 1 &&
                 this.#userCurrentMinute >= 30
               ) {
-                if (60 - this.#userCurrentMinute <= 10)
+                if (60 - this.#userCurrentMinute <= 30)
                   this._sendNotification(
                     taskHasTimePeriod.task,
                     60 - this.#userCurrentMinute
