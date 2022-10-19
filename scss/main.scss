@@ -99,6 +99,10 @@ input {
   &:focus {
     box-shadow: none !important;
   }
+
+  &:checked + label {
+    text-decoration: line-through;
+  }
 }
 
 body {
@@ -121,11 +125,6 @@ body {
         transition: $transition-base;
         .task {
           user-select: none;
-          input {
-            &:checked + label {
-              text-decoration: line-through;
-            }
-          }
         }
       }
       footer {
