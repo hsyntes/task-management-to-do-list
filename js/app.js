@@ -958,7 +958,6 @@ class App {
     this._renderTasks();
     this._clearTimePeriod();
     this._taskChart();
-    this._upcomingTask();
   }
 
   // Searching tasks by input value
