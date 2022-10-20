@@ -956,7 +956,6 @@ class App {
 
     this._saveTasks();
     this._renderTasks();
-    this._clearTimePeriod();
     this._taskChart();
   }
 
