@@ -10993,13 +10993,6 @@ textarea.form-control-lg {
   border-radius: 3rem 0 0 0 !important;
 }
 
-label {
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
 input:focus {
   box-shadow: none !important;
 }
@@ -11027,17 +11020,17 @@ body {
   overflow-y: scroll !important;
   transition: all 0.3s ease-out;
 }
-.container .app #app-activity main .task,
-.container .app #app-task main .task {
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
 .container .app #app-activity footer #btn-search-task,
 .container .app #app-task footer #btn-search-task {
   transform: translateY(200%);
   transition: all 0.3s ease-out;
+}
+
+.task {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 @-webkit-keyframes dropdown-menu-fade-transition {

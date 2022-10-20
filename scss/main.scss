@@ -91,9 +91,9 @@ $font-weight-bold: 900;
   border-radius: 3rem 0 0 0 !important;
 }
 
-label {
-  user-select: none;
-}
+// label {
+//   user-select: none;
+// }
 
 input {
   &:focus {
@@ -123,9 +123,6 @@ body {
         overflow: hidden;
         overflow-y: scroll !important;
         transition: $transition-base;
-        .task {
-          user-select: none;
-        }
       }
       footer {
         #btn-search-task {
@@ -135,6 +132,10 @@ body {
       }
     }
   }
+}
+
+.task {
+  user-select: none;
 }
 
 @keyframes dropdown-menu-fade-transition {
