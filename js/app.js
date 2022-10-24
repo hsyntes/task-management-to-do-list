@@ -22,6 +22,13 @@ class Task extends Activity {
 }
 
 // The HTML Elements
+// The App Splash Element
+const [appSplash, appSplashIcon, appSplashTexts] = [
+  document.querySelector("#app-splash"),
+  document.querySelector("#app-splash-icon"),
+  document.querySelectorAll(".app-splash-text"),
+];
+
 // The App Activity's Elements
 const [appActivity, btnActivityMenu, selectActivity, activities] = [
   document.querySelector("#app-activity"),
@@ -167,123 +174,159 @@ class App {
   };
 
   constructor() {
-    this._getActivites();
+    appSplashIcon.animate(
+      [
+        {
+          transform: "rotateZ(20deg) scale(0.75)",
+        },
+        {
+          transform: "rotateZ(0deg) scale(1)",
+        },
+      ],
+      {
+        duration: 800,
+      }
+    );
 
-    btnActivityMenu.addEventListener("click", () => {
-      offcanvasBody.innerHTML = "";
-      $(".offcanvas").offcanvas("show");
-
-      const btnDeleteAllActivities = this._createOffcanvasBtns();
-
-      btnDeleteAllActivities.innerHTML = `
-      <span>
-        <i class="fa fa-trash-o"></i>
-      </span>
-      <span class="ms-2">Delete all activities</span>
-      `;
-
-      btnDeleteAllActivities.addEventListener("click", () => {
-        this._modalConfirm("activities");
-      });
-    });
-
-    // Starting the timer and getting the current activity
-    activities.addEventListener("mousedown", (e) => {
-      const activityHTML = e.target.closest(".activity");
-
-      if (!activityHTML) return;
-
-      this.#currentActivity = this.#activities.find(
-        (activity) =>
-          activity.activityType ===
-          activityHTML.children[1].firstElementChild.textContent.trim()
+    appSplashTexts.forEach((appSplashText) => {
+      appSplashText.animate(
+        [
+          {
+            letterSpacing: "5px",
+          },
+          {
+            letterSpacing: "0px",
+          },
+        ],
+        {
+          duration: 800,
+        }
       );
-
-      this._timer("activity");
     });
 
-    // Stopping the timer and going to the app task page
-    activities.addEventListener("mouseup", (e) => {
-      const activityHTML = e.target.closest(".activity");
+    setTimeout(() => {
+      appSplash.classList.add("d-none");
 
-      if (!activityHTML) return;
+      appActivity.classList.remove("d-none");
 
-      if (this.#time >= 0) this._goToAppTask();
+      this._getActivites();
 
-      clearInterval(this.#timerInterval);
-    });
+      btnActivityMenu.addEventListener("click", () => {
+        offcanvasBody.innerHTML = "";
+        $(".offcanvas").offcanvas("show");
 
-    selectActivity.addEventListener("click", this._createActivity.bind(this));
+        const btnDeleteAllActivities = this._createOffcanvasBtns();
 
-    // Going to the app activity page
-    btnGoToAppActivity.addEventListener("click", () => {
-      btnSearchTask.style.transform = "translateY(200%)";
+        btnDeleteAllActivities.innerHTML = `
+        <span>
+          <i class="fa fa-trash-o"></i>
+        </span>
+        <span class="ms-2">Delete all activities</span>
+        `;
 
-      setTimeout(() => {
-        btnSearchTask.classList.add("d-none");
-        this._switchPages(appTask, appActivity);
-        appTaskMain.style.position = "block";
-      }, 300);
-    });
+        btnDeleteAllActivities.addEventListener("click", () => {
+          this._modalConfirm("activities");
+        });
+      });
 
-    btnDeleteAllTasks.addEventListener("click", () => {
-      this._modalConfirm("tasks");
-    });
+      // Starting the timer and getting the current activity
+      activities.addEventListener("mousedown", (e) => {
+        const activityHTML = e.target.closest(".activity");
 
-    formAddTask.addEventListener("submit", this._addTask.bind(this));
+        if (!activityHTML) return;
 
-    // Setting default margin-top value for main element which position is fixed
-    appTaskMain.style.top = this.#appTaskMainTop;
-
-    // When appTaskMain scrolled
-    appTaskMain.addEventListener("scroll", () => {
-      if (appTaskMain.scrollTop === 0)
-        appTaskMain.style.top = this.#appTaskMainTop;
-      else appTaskMain.style.top = "0%";
-    });
-
-    // Starting the timer and getting the current task
-    tasks.forEach((task) => {
-      task.addEventListener("mousedown", (e) => {
-        const taskHTML = e.target.closest(".task");
-
-        if (!taskHTML) return;
-
-        this.#currentTask = this.#currentActivityTasks.find(
-          (currentActivityTask) =>
-            currentActivityTask.task ===
-            taskHTML.children[0].lastElementChild.textContent.trim()
+        this.#currentActivity = this.#activities.find(
+          (activity) =>
+            activity.activityType ===
+            activityHTML.children[1].firstElementChild.textContent.trim()
         );
 
-        if (e.target.classList.contains("form-check-input")) {
-          const input = e.target;
-
-          if (!input.checked) this.#currentTask.checked = true;
-          else this.#currentTask.checked = false;
-
-          this._saveTasks();
-          this._renderTasks();
-          this._taskChart();
-        }
-
-        this._timer("task");
+        this._timer("activity");
       });
-    });
 
-    // Stopping the timer
-    tasks.forEach((task) => {
-      task.addEventListener("mouseup", (e) => {
-        const taskHTML = e.target.closest(".task");
+      // Stopping the timer and going to the app task page
+      activities.addEventListener("mouseup", (e) => {
+        const activityHTML = e.target.closest(".activity");
 
-        if (!taskHTML) return;
+        if (!activityHTML) return;
+
+        if (this.#time >= 0) this._goToAppTask();
 
         clearInterval(this.#timerInterval);
       });
-    });
 
-    formEditTask.addEventListener("submit", this._editTask.bind(this));
+      selectActivity.addEventListener("click", this._createActivity.bind(this));
 
-    inputSearchTask.addEventListener("keyup", this._searchedTask.bind(this));
+      // Going to the app activity page
+      btnGoToAppActivity.addEventListener("click", () => {
+        btnSearchTask.style.transform = "translateY(200%)";
+
+        setTimeout(() => {
+          btnSearchTask.classList.add("d-none");
+          this._switchPages(appTask, appActivity);
+          appTaskMain.style.position = "block";
+        }, 300);
+      });
+
+      btnDeleteAllTasks.addEventListener("click", () => {
+        this._modalConfirm("tasks");
+      });
+
+      formAddTask.addEventListener("submit", this._addTask.bind(this));
+
+      // Setting default margin-top value for main element which position is fixed
+      appTaskMain.style.top = this.#appTaskMainTop;
+
+      // When appTaskMain scrolled
+      appTaskMain.addEventListener("scroll", () => {
+        if (appTaskMain.scrollTop === 0)
+          appTaskMain.style.top = this.#appTaskMainTop;
+        else appTaskMain.style.top = "0%";
+      });
+
+      // Starting the timer and getting the current task
+      tasks.forEach((task) => {
+        task.addEventListener("mousedown", (e) => {
+          const taskHTML = e.target.closest(".task");
+
+          if (!taskHTML) return;
+
+          this.#currentTask = this.#currentActivityTasks.find(
+            (currentActivityTask) =>
+              currentActivityTask.task ===
+              taskHTML.children[0].lastElementChild.textContent.trim()
+          );
+
+          if (e.target.classList.contains("form-check-input")) {
+            const input = e.target;
+
+            if (!input.checked) this.#currentTask.checked = true;
+            else this.#currentTask.checked = false;
+
+            this._saveTasks();
+            this._renderTasks();
+            this._taskChart();
+          }
+
+          this._timer("task");
+        });
+      });
+
+      // Stopping the timer
+      tasks.forEach((task) => {
+        task.addEventListener("mouseup", (e) => {
+          const taskHTML = e.target.closest(".task");
+
+          if (!taskHTML) return;
+
+          clearInterval(this.#timerInterval);
+        });
+      });
+
+      formEditTask.addEventListener("submit", this._editTask.bind(this));
+
+      inputSearchTask.addEventListener("keyup", this._searchedTask.bind(this));
+    }, 800);
   }
 
   // Creating offcanvas buttons

@@ -110,6 +110,7 @@ body {
   height: 100vh;
   overflow: hidden;
   color: $primary;
+
   #app-activity,
   #app-task {
     transition: $transition-base;
@@ -126,6 +127,11 @@ body {
       }
     }
   }
+  // #app-splash {
+  //   .app-splash-text {
+  //     letter-spacing: 0px;
+  //   }
+  // }
 }
 
 .task {
