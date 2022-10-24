@@ -106,25 +106,23 @@ body {
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-.container {
-  .app {
-    height: 100vh;
-    overflow: hidden;
-    color: $primary;
-    #app-activity,
-    #app-task {
+.app {
+  height: 100vh;
+  overflow: hidden;
+  color: $primary;
+  #app-activity,
+  #app-task {
+    transition: $transition-base;
+    main {
+      height: 100%;
+      overflow: hidden;
+      overflow-y: scroll !important;
       transition: $transition-base;
-      main {
-        height: 100%;
-        overflow: hidden;
-        overflow-y: scroll !important;
+    }
+    footer {
+      #btn-search-task {
+        transform: translateY(200%);
         transition: $transition-base;
-      }
-      footer {
-        #btn-search-task {
-          transform: translateY(200%);
-          transition: $transition-base;
-        }
       }
     }
   }
@@ -132,10 +130,6 @@ body {
 
 .task {
   user-select: none;
-
-  &:checked + label {
-    text-decoration: line-through;
-  }
 }
 
 @keyframes dropdown-menu-fade-transition {
