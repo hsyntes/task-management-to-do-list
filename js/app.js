@@ -807,6 +807,7 @@ class App {
             }
 
             if (taskTimeFormat === "PM" && this.#userCurrentHour >= 12) {
+              this.#taskTimePM.push(taskHasTimePeriod);
               taskStartHour = Number(taskStartHour) + 12;
 
               if (
