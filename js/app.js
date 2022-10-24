@@ -177,7 +177,7 @@ class App {
     appSplashIcon.animate(
       [
         {
-          transform: "rotateZ(20deg) scale(0.75)",
+          transform: "rotateZ(5deg) scale(0.75)",
         },
         {
           transform: "rotateZ(0deg) scale(1)",
@@ -192,7 +192,7 @@ class App {
       appSplashText.animate(
         [
           {
-            letterSpacing: "5px",
+            letterSpacing: "2px",
           },
           {
             letterSpacing: "0px",
