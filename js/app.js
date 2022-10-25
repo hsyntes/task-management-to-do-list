@@ -23,10 +23,9 @@ class Task extends Activity {
 
 // The HTML Elements
 // The App Splash Element
-const [appSplash, appSplashIcon, appSplashTexts] = [
+const [appSplash, appSplashIcon] = [
   document.querySelector("#app-splash"),
   document.querySelector("#app-splash-icon"),
-  document.querySelectorAll(".app-splash-text"),
 ];
 
 // The App Activity's Elements
@@ -188,26 +187,10 @@ class App {
       }
     );
 
-    appSplashTexts.forEach((appSplashText) => {
-      appSplashText.animate(
-        [
-          {
-            letterSpacing: "2px",
-          },
-          {
-            letterSpacing: "0px",
-          },
-        ],
-        {
-          duration: 800,
-        }
-      );
-    });
-
     setTimeout(() => {
       appSplash.classList.add("d-none");
-
       appActivity.classList.remove("d-none");
+      appTask.classList.remove("d-none");
 
       this._getActivites();
 

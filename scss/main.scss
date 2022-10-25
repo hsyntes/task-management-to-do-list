@@ -91,10 +91,6 @@ $font-weight-bold: 900;
   border-radius: 3rem 0 0 0 !important;
 }
 
-// label {
-//   user-select: none;
-// }
-
 input {
   &:focus {
     box-shadow: none !important;
@@ -114,12 +110,14 @@ body {
   #app-activity,
   #app-task {
     transition: $transition-base;
+
     main {
       height: 100%;
       overflow: hidden;
       overflow-y: scroll !important;
       transition: $transition-base;
     }
+
     footer {
       #btn-search-task {
         transform: translateY(200%);
@@ -127,11 +125,6 @@ body {
       }
     }
   }
-  // #app-splash {
-  //   .app-splash-text {
-  //     letter-spacing: 0px;
-  //   }
-  // }
 }
 
 .task {
