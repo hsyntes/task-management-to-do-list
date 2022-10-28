@@ -159,8 +159,6 @@ class App {
 
   #userCurrentHour;
   #userCurrentMinute;
-  #taskTimeAM = [];
-  #taskTimePM = [];
 
   #colors = {
     primary: getComputedStyle(document.documentElement).getPropertyValue(
@@ -176,10 +174,13 @@ class App {
     appSplashIcon.animate(
       [
         {
-          transform: "rotateZ(5deg) scale(0.75)",
+          transform: "rotateZ(5deg)",
         },
         {
-          transform: "rotateZ(0deg) scale(1)",
+          transform: "rotateZ(-5deg)",
+        },
+        {
+          transform: "rotateZ(0deg)",
         },
       ],
       {
@@ -438,8 +439,6 @@ class App {
     this._switchPages(appActivity, appTask);
 
     this.#currentActivityTasks = [];
-    this.#taskTimeAM = [];
-    this.#taskTimePM = [];
 
     this._getCurrentActivityTasks();
 
@@ -808,8 +807,6 @@ class App {
             this.#userCurrentMinute = new Date().getMinutes();
 
             if (taskTimeFormat === "AM" && this.#userCurrentHour < 12) {
-              this.#taskTimeAM.push(taskHasTimePeriod);
-
               if (
                 Number(taskStartHour) - this.#userCurrentHour === 1 &&
                 this.#userCurrentMinute >= 30
@@ -833,7 +830,6 @@ class App {
             }
 
             if (taskTimeFormat === "PM" && this.#userCurrentHour >= 12) {
-              this.#taskTimePM.push(taskHasTimePeriod);
               taskStartHour = Number(taskStartHour) + 12;
 
               if (
@@ -857,6 +853,18 @@ class App {
                     Number(taskStartMinute) - this.#userCurrentMinute
                   );
             }
+
+            // It's special state.
+            if (
+              Number(taskStartHour) === 12 &&
+              taskTimeFormat === "PM" &&
+              this.#userCurrentHour < 12
+            )
+              if (60 - this.#userCurrentMinute <= 30)
+                this._sendNotification(
+                  taskHasTimePeriod,
+                  60 - this.#userCurrentMinute
+                );
           });
       }
     });
