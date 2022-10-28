@@ -174,10 +174,10 @@ class App {
     appSplashIcon.animate(
       [
         {
-          transform: "rotateZ(5deg)",
+          transform: "rotateZ(3deg)",
         },
         {
-          transform: "rotateZ(-5deg)",
+          transform: "rotateZ(-3deg)",
         },
         {
           transform: "rotateZ(0deg)",
