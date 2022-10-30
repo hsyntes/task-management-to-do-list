@@ -203,7 +203,7 @@ class App {
 
         btnDeleteAllActivities.innerHTML = `
         <span>
-          <i class="fa fa-trash-o"></i>
+          <i class="fa fa-trash"></i>
         </span>
         <span class="ms-2">Delete all activities</span>
         `;
@@ -523,7 +523,7 @@ class App {
           const btnDeleteCurrentActivity = this._createOffcanvasBtns();
           btnDeleteCurrentActivity.innerHTML = `
           <span>
-            <i class="fa fa-trash-o"></i>
+            <i class="fa fa-trash"></i>
           </span>
           <span class="ms-2">Delete this activity</span>
           `;
@@ -607,7 +607,7 @@ class App {
           const btnDeleteCurrentTask = this._createOffcanvasBtns();
           btnDeleteCurrentTask.innerHTML = `
           <span>
-            <i class="fa fa-trash-o"></i>
+            <i class="fa fa-trash"></i>
           </span>
           <span class="ms-2">Delete this task</span>
           `;
