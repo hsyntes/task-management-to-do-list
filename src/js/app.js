@@ -271,9 +271,9 @@ class App {
         else appTaskMain.style.top = "0%";
       });
 
-      // Starting the timer and getting the current task
       tasks.forEach((task) => {
-        task.addEventListener("long-press", (e) => {
+        // Checked the task as do.
+        task.addEventListener("click", (e) => {
           const taskHTML = e.target.closest(".task");
 
           if (!taskHTML) return;
@@ -287,13 +287,26 @@ class App {
           if (e.target.classList.contains("form-check-input")) {
             const input = e.target;
 
-            if (!input.checked) this.#currentTask.checked = true;
+            if (input.checked) this.#currentTask.checked = true;
             else this.#currentTask.checked = false;
 
             this._saveTasks();
             this._renderTasks();
             this._taskChart();
           }
+        });
+
+        // Opening the offcanvas bottom menu and getting the current task
+        task.addEventListener("long-press", (e) => {
+          const taskHTML = e.target.closest(".task");
+
+          if (!taskHTML) return;
+
+          this.#currentTask = this.#currentActivityTasks.find(
+            (currentActivityTask) =>
+              currentActivityTask.task ===
+              taskHTML.children[0].lastElementChild.textContent.trim()
+          );
 
           this._openOffcanvas("task");
         });
