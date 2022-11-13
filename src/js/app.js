@@ -148,9 +148,6 @@ class App {
   #currentActivityTasks = [];
   #currentTask;
 
-  #time;
-  #timerInterval;
-
   #dateTimeFormat = new Intl.DateTimeFormat(navigator.language, {
     day: "numeric",
     weekday: "short",
@@ -189,6 +186,8 @@ class App {
     );
 
     setTimeout(() => {
+      window.addEventListener("contextmenu", (e) => e.preventDefault());
+
       appSplash.classList.add("d-none");
       appActivity.classList.remove("d-none");
       appTask.classList.remove("d-none");
@@ -213,8 +212,7 @@ class App {
         });
       });
 
-      // Starting the timer and getting the current activity
-      activities.addEventListener("mousedown", (e) => {
+      activities.addEventListener("click", (e) => {
         const activityHTML = e.target.closest(".activity");
 
         if (!activityHTML) return;
@@ -225,18 +223,23 @@ class App {
             activityHTML.children[1].firstElementChild.textContent.trim()
         );
 
-        this._timer("activity");
+        this._goToAppTask();
       });
 
-      // Stopping the timer and going to the app task page
-      activities.addEventListener("mouseup", (e) => {
+      activities.addEventListener("long-press", (e) => {
+        e.preventDefault();
+
         const activityHTML = e.target.closest(".activity");
 
         if (!activityHTML) return;
 
-        if (this.#time >= 0) this._goToAppTask();
+        this.#currentActivity = this.#activities.find(
+          (activity) =>
+            activity.activityType ===
+            activityHTML.children[1].firstElementChild.textContent.trim()
+        );
 
-        clearInterval(this.#timerInterval);
+        this._openOffcanvas("activity");
       });
 
       selectActivity.addEventListener("click", this._createActivity.bind(this));
@@ -270,7 +273,7 @@ class App {
 
       // Starting the timer and getting the current task
       tasks.forEach((task) => {
-        task.addEventListener("mousedown", (e) => {
+        task.addEventListener("long-press", (e) => {
           const taskHTML = e.target.closest(".task");
 
           if (!taskHTML) return;
@@ -292,18 +295,7 @@ class App {
             this._taskChart();
           }
 
-          this._timer("task");
-        });
-      });
-
-      // Stopping the timer
-      tasks.forEach((task) => {
-        task.addEventListener("mouseup", (e) => {
-          const taskHTML = e.target.closest(".task");
-
-          if (!taskHTML) return;
-
-          clearInterval(this.#timerInterval);
+          this._openOffcanvas("task");
         });
       });
 
@@ -509,120 +501,107 @@ class App {
   }
 
   // The timer function
-  _timer(type) {
-    this.#time = 1;
+  _openOffcanvas(type) {
+    if (type === "activity") {
+      offcanvasBody.innerHTML = "";
+      $(".offcanvas").offcanvas("show");
 
-    const tick = () => {
-      this.#time--;
-
-      if (this.#time < 0) {
-        if (type === "activity") {
-          offcanvasBody.innerHTML = "";
-          $(".offcanvas").offcanvas("show");
-
-          const btnDeleteCurrentActivity = this._createOffcanvasBtns();
-          btnDeleteCurrentActivity.innerHTML = `
+      const btnDeleteCurrentActivity = this._createOffcanvasBtns();
+      btnDeleteCurrentActivity.innerHTML = `
           <span>
             <i class="fa fa-trash"></i>
           </span>
           <span class="ms-2">Delete this activity</span>
           `;
 
-          btnDeleteCurrentActivity.addEventListener("click", () => {
-            this._modalConfirm("activity");
-          });
-        }
+      btnDeleteCurrentActivity.addEventListener("click", () => {
+        this._modalConfirm("activity");
+      });
+    }
 
-        if (type === "task") {
-          offcanvasBody.innerHTML = "";
+    if (type === "task") {
+      offcanvasBody.innerHTML = "";
 
-          $(".offcanvas").offcanvas("show");
-          $("#modal-search-task").modal("hide");
+      $(".offcanvas").offcanvas("show");
+      $("#modal-search-task").modal("hide");
 
-          const btnEditCurrentTask = this._createOffcanvasBtns();
-          btnEditCurrentTask.innerHTML = `
+      const btnEditCurrentTask = this._createOffcanvasBtns();
+      btnEditCurrentTask.innerHTML = `
           <span>
             <i class="fa fa-pencil"></i>
           </span>
           <span class="ms-2">Edit this task</span>
           `;
-          btnEditCurrentTask.setAttribute("data-bs-toggle", "modal");
-          btnEditCurrentTask.setAttribute("data-bs-target", "#modal-edit-task");
-          btnEditCurrentTask.addEventListener("click", () => {
-            inputEditTask.value = this.#currentTask.task;
+      btnEditCurrentTask.setAttribute("data-bs-toggle", "modal");
+      btnEditCurrentTask.setAttribute("data-bs-target", "#modal-edit-task");
+      btnEditCurrentTask.addEventListener("click", () => {
+        inputEditTask.value = this.#currentTask.task;
 
-            if (this.#currentTask.timePeriod) {
-              includeTimeEditPeriod.checked = true;
+        if (this.#currentTask.timePeriod) {
+          includeTimeEditPeriod.checked = true;
 
-              document
-                .querySelector("#collapse-time-edit-period")
-                .classList.add("show");
+          document
+            .querySelector("#collapse-time-edit-period")
+            .classList.add("show");
 
-              const taskTimePeriod = this.#currentTask.timePeriod.split("-");
-              const [taskStarts, taskFinishs] = [...taskTimePeriod];
+          const taskTimePeriod = this.#currentTask.timePeriod.split("-");
+          const [taskStarts, taskFinishs] = [...taskTimePeriod];
 
-              const [
-                taskStartHour,
-                taskStartMinute,
-                taskStartAmPm,
-                taskFinishHour,
-                taskFinishMinute,
-                taskFinishAmPm,
-              ] = [
-                taskStarts.slice(0, 2),
-                taskStarts.slice(3, 5),
-                taskStarts.slice(6, 8),
-                taskFinishs.trim().slice(0, 2),
-                taskFinishs.trim().slice(3, 5),
-                taskFinishs.trim().slice(6, 8),
-              ];
+          const [
+            taskStartHour,
+            taskStartMinute,
+            taskStartAmPm,
+            taskFinishHour,
+            taskFinishMinute,
+            taskFinishAmPm,
+          ] = [
+            taskStarts.slice(0, 2),
+            taskStarts.slice(3, 5),
+            taskStarts.slice(6, 8),
+            taskFinishs.trim().slice(0, 2),
+            taskFinishs.trim().slice(3, 5),
+            taskFinishs.trim().slice(6, 8),
+          ];
 
-              [
-                selectStartEditHour.value,
-                selectStartEditMinute.value,
-                selectStartEditAmPm.value,
+          [
+            selectStartEditHour.value,
+            selectStartEditMinute.value,
+            selectStartEditAmPm.value,
 
-                selectFinishEditHour.value,
-                selectFinishEditMinute.value,
-                selectFinishEditAmPm.value,
-              ] = [
-                taskStartHour,
-                taskStartMinute,
-                taskStartAmPm.toLowerCase(),
-                taskFinishHour,
-                taskFinishMinute,
-                taskFinishAmPm.toLowerCase(),
-              ];
-            } else {
-              includeTimeEditPeriod.checked = false;
+            selectFinishEditHour.value,
+            selectFinishEditMinute.value,
+            selectFinishEditAmPm.value,
+          ] = [
+            taskStartHour,
+            taskStartMinute,
+            taskStartAmPm.toLowerCase(),
+            taskFinishHour,
+            taskFinishMinute,
+            taskFinishAmPm.toLowerCase(),
+          ];
+        } else {
+          includeTimeEditPeriod.checked = false;
 
-              document
-                .querySelector("#collapse-time-edit-period")
-                .classList.remove("show");
+          document
+            .querySelector("#collapse-time-edit-period")
+            .classList.remove("show");
 
-              this._clearTimePeriod();
-            }
-          });
+          this._clearTimePeriod();
+        }
+      });
 
-          const btnDeleteCurrentTask = this._createOffcanvasBtns();
-          btnDeleteCurrentTask.innerHTML = `
+      const btnDeleteCurrentTask = this._createOffcanvasBtns();
+      btnDeleteCurrentTask.innerHTML = `
           <span>
             <i class="fa fa-trash"></i>
           </span>
           <span class="ms-2">Delete this task</span>
           `;
 
-          btnDeleteCurrentTask.addEventListener("click", () => {
-            this._modalConfirm("task");
-          });
-        }
-
-        clearInterval(this.#timerInterval);
-      }
-    };
-
-    tick();
-    this.#timerInterval = setInterval(tick, 1000);
+      btnDeleteCurrentTask.addEventListener("click", () => {
+        this._modalConfirm("task");
+      });
+    }
   }
 
   // Getting activities from the Local Storage
