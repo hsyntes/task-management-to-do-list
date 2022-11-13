@@ -22,11 +22,6 @@ class Task extends Activity {
 }
 
 // The HTML Elements
-// The App Splash Element
-const [appSplash, appSplashIcon] = [
-  document.querySelector("#app-splash"),
-  document.querySelector("#app-splash-icon"),
-];
 
 // The App Activity's Elements
 const [appActivity, btnActivityMenu, selectActivity, activities] = [
@@ -168,154 +163,132 @@ class App {
   };
 
   constructor() {
-    appSplashIcon.animate(
-      [
-        {
-          transform: "rotateZ(2.5deg)",
-        },
-        {
-          transform: "rotateZ(2.5deg)",
-        },
-        {
-          transform: "rotateZ(0deg)",
-        },
-      ],
-      {
-        duration: 800,
-      }
-    );
+    window.addEventListener("contextmenu", (e) => e.preventDefault());
 
-    setTimeout(() => {
-      window.addEventListener("contextmenu", (e) => e.preventDefault());
+    appActivity.classList.remove("d-none");
+    appTask.classList.remove("d-none");
 
-      appSplash.classList.add("d-none");
-      appActivity.classList.remove("d-none");
-      appTask.classList.remove("d-none");
+    this._getActivites();
 
-      this._getActivites();
+    btnActivityMenu.addEventListener("click", () => {
+      offcanvasBody.innerHTML = "";
+      $(".offcanvas").offcanvas("show");
 
-      btnActivityMenu.addEventListener("click", () => {
-        offcanvasBody.innerHTML = "";
-        $(".offcanvas").offcanvas("show");
+      const btnDeleteAllActivities = this._createOffcanvasBtns();
 
-        const btnDeleteAllActivities = this._createOffcanvasBtns();
-
-        btnDeleteAllActivities.innerHTML = `
+      btnDeleteAllActivities.innerHTML = `
         <span>
           <i class="fa fa-trash"></i>
         </span>
         <span class="ms-2">Delete all activities</span>
         `;
 
-        btnDeleteAllActivities.addEventListener("click", () => {
-          this._modalConfirm("activities");
-        });
+      btnDeleteAllActivities.addEventListener("click", () => {
+        this._modalConfirm("activities");
       });
+    });
 
-      activities.addEventListener("click", (e) => {
-        const activityHTML = e.target.closest(".activity");
+    activities.addEventListener("click", (e) => {
+      const activityHTML = e.target.closest(".activity");
 
-        if (!activityHTML) return;
+      if (!activityHTML) return;
 
-        this.#currentActivity = this.#activities.find(
-          (activity) =>
-            activity.activityType ===
-            activityHTML.children[1].firstElementChild.textContent.trim()
+      this.#currentActivity = this.#activities.find(
+        (activity) =>
+          activity.activityType ===
+          activityHTML.children[1].firstElementChild.textContent.trim()
+      );
+
+      this._goToAppTask();
+    });
+
+    activities.addEventListener("long-press", (e) => {
+      const activityHTML = e.target.closest(".activity");
+
+      if (!activityHTML) return;
+
+      this.#currentActivity = this.#activities.find(
+        (activity) =>
+          activity.activityType ===
+          activityHTML.children[1].firstElementChild.textContent.trim()
+      );
+
+      this._openOffcanvas("activity");
+    });
+
+    selectActivity.addEventListener("click", this._createActivity.bind(this));
+
+    // Going to the app activity page
+    btnGoToAppActivity.addEventListener("click", () => {
+      btnSearchTask.style.transform = "translateY(200%)";
+
+      setTimeout(() => {
+        btnSearchTask.classList.add("d-none");
+        this._switchPages(appTask, appActivity);
+        appTaskMain.style.position = "block";
+      }, 300);
+    });
+
+    btnDeleteAllTasks.addEventListener("click", () => {
+      this._modalConfirm("tasks");
+    });
+
+    formAddTask.addEventListener("submit", this._addTask.bind(this));
+
+    // Setting default margin-top value for main element which position is fixed
+    appTaskMain.style.top = this.#appTaskMainTop;
+
+    // When appTaskMain scrolled
+    appTaskMain.addEventListener("scroll", () => {
+      if (appTaskMain.scrollTop === 0)
+        appTaskMain.style.top = this.#appTaskMainTop;
+      else appTaskMain.style.top = "0%";
+    });
+
+    tasks.forEach((task) => {
+      // Checked the task as do.
+      task.addEventListener("click", (e) => {
+        const taskHTML = e.target.closest(".task");
+
+        if (!taskHTML) return;
+
+        this.#currentTask = this.#currentActivityTasks.find(
+          (currentActivityTask) =>
+            currentActivityTask.task ===
+            taskHTML.children[0].lastElementChild.textContent.trim()
         );
 
-        this._goToAppTask();
+        if (e.target.classList.contains("form-check-input")) {
+          const input = e.target;
+
+          if (input.checked) this.#currentTask.checked = true;
+          else this.#currentTask.checked = false;
+
+          this._saveTasks();
+          this._renderTasks();
+          this._taskChart();
+        }
       });
 
-      activities.addEventListener("long-press", (e) => {
-        e.preventDefault();
+      // Opening the offcanvas bottom menu and getting the current task
+      task.addEventListener("long-press", (e) => {
+        const taskHTML = e.target.closest(".task");
 
-        const activityHTML = e.target.closest(".activity");
+        if (!taskHTML) return;
 
-        if (!activityHTML) return;
-
-        this.#currentActivity = this.#activities.find(
-          (activity) =>
-            activity.activityType ===
-            activityHTML.children[1].firstElementChild.textContent.trim()
+        this.#currentTask = this.#currentActivityTasks.find(
+          (currentActivityTask) =>
+            currentActivityTask.task ===
+            taskHTML.children[0].lastElementChild.textContent.trim()
         );
 
-        this._openOffcanvas("activity");
+        this._openOffcanvas("task");
       });
+    });
 
-      selectActivity.addEventListener("click", this._createActivity.bind(this));
+    formEditTask.addEventListener("submit", this._editTask.bind(this));
 
-      // Going to the app activity page
-      btnGoToAppActivity.addEventListener("click", () => {
-        btnSearchTask.style.transform = "translateY(200%)";
-
-        setTimeout(() => {
-          btnSearchTask.classList.add("d-none");
-          this._switchPages(appTask, appActivity);
-          appTaskMain.style.position = "block";
-        }, 300);
-      });
-
-      btnDeleteAllTasks.addEventListener("click", () => {
-        this._modalConfirm("tasks");
-      });
-
-      formAddTask.addEventListener("submit", this._addTask.bind(this));
-
-      // Setting default margin-top value for main element which position is fixed
-      appTaskMain.style.top = this.#appTaskMainTop;
-
-      // When appTaskMain scrolled
-      appTaskMain.addEventListener("scroll", () => {
-        if (appTaskMain.scrollTop === 0)
-          appTaskMain.style.top = this.#appTaskMainTop;
-        else appTaskMain.style.top = "0%";
-      });
-
-      tasks.forEach((task) => {
-        // Checked the task as do.
-        task.addEventListener("click", (e) => {
-          const taskHTML = e.target.closest(".task");
-
-          if (!taskHTML) return;
-
-          this.#currentTask = this.#currentActivityTasks.find(
-            (currentActivityTask) =>
-              currentActivityTask.task ===
-              taskHTML.children[0].lastElementChild.textContent.trim()
-          );
-
-          if (e.target.classList.contains("form-check-input")) {
-            const input = e.target;
-
-            if (input.checked) this.#currentTask.checked = true;
-            else this.#currentTask.checked = false;
-
-            this._saveTasks();
-            this._renderTasks();
-            this._taskChart();
-          }
-        });
-
-        // Opening the offcanvas bottom menu and getting the current task
-        task.addEventListener("long-press", (e) => {
-          const taskHTML = e.target.closest(".task");
-
-          if (!taskHTML) return;
-
-          this.#currentTask = this.#currentActivityTasks.find(
-            (currentActivityTask) =>
-              currentActivityTask.task ===
-              taskHTML.children[0].lastElementChild.textContent.trim()
-          );
-
-          this._openOffcanvas("task");
-        });
-      });
-
-      formEditTask.addEventListener("submit", this._editTask.bind(this));
-
-      inputSearchTask.addEventListener("keyup", this._searchedTask.bind(this));
-    }, 800);
+    inputSearchTask.addEventListener("keyup", this._searchedTask.bind(this));
   }
 
   // Creating offcanvas buttons
