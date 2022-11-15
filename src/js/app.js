@@ -242,7 +242,7 @@ class App {
     appTaskMain.addEventListener("scroll", () => {
       if (appTaskMain.scrollTop === 0)
         appTaskMain.style.top = this.#appTaskMainTop;
-      else appTaskMain.style.top = "0%";
+      else appTaskMain.style.top = "12%";
     });
 
     tasks.forEach((task) => {
