@@ -521,6 +521,8 @@ class App {
       btnEditCurrentTask.setAttribute("data-bs-toggle", "modal");
       btnEditCurrentTask.setAttribute("data-bs-target", "#modal-edit-task");
       btnEditCurrentTask.addEventListener("click", () => {
+        $(".offcanvas").offcanvas("hide");
+
         inputEditTask.value = this.#currentTask.task;
 
         if (this.#currentTask.timePeriod) {
