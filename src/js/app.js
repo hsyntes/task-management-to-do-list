@@ -694,7 +694,7 @@ class App {
     this.#taskChart = new Chart(ctx, {
       type: "doughnut",
       data: {
-        labels: ["Completed", "incompleted"],
+        // labels: ["Completed", "Incompleted"],
         datasets: [
           {
             data: [completedTasks.length, incompletedTasks.length],
