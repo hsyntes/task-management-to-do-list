@@ -165,9 +165,6 @@ class App {
   constructor() {
     window.addEventListener("contextmenu", (e) => e.preventDefault());
 
-    appActivity.classList.remove("d-none");
-    appTask.classList.remove("d-none");
-
     this._getActivites();
 
     btnActivityMenu.addEventListener("click", () => {
@@ -242,7 +239,7 @@ class App {
     appTaskMain.addEventListener("scroll", () => {
       if (appTaskMain.scrollTop === 0)
         appTaskMain.style.top = this.#appTaskMainTop;
-      else appTaskMain.style.top = "12%";
+      else appTaskMain.style.top = `${this.#heights.navbarHeight}px`;
     });
 
     tasks.forEach((task) => {
@@ -414,7 +411,7 @@ class App {
 
   // Going to the task page
   _goToAppTask() {
-    this._switchPages(appActivity, appTask);
+    setTimeout(() => this._switchPages(appActivity, appTask), 300);
 
     this.#currentActivityTasks = [];
 
