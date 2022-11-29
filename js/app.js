@@ -691,7 +691,7 @@ class App {
     this.#taskChart = new Chart(ctx, {
       type: "doughnut",
       data: {
-        // labels: ["Completed", "Incompleted"],
+        labels: ["Completed", "Incompleted"],
         datasets: [
           {
             data: [completedTasks.length, incompletedTasks.length],
@@ -699,6 +699,19 @@ class App {
             borderColor: [this.#colors.secondary, this.#colors.primary],
           },
         ],
+      },
+      options: {
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            intersect: false,
+
+            padding: 10,
+            boxPadding: 2,
+          },
+        },
       },
     });
 
