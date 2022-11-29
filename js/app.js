@@ -424,7 +424,7 @@ class App {
     btnSearchTask.classList.remove("d-none");
     setTimeout(() => {
       btnSearchTask.style.transform = "translateY(0%)";
-    }, 300);
+    }, 600);
 
     this._renderTasks();
     this._taskChart();

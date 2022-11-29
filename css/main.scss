@@ -110,7 +110,7 @@ body {
 }
 
 .app {
-  height: 95vh;
+  height: 100vh;
   overflow: hidden;
   color: $primary;
 
@@ -127,7 +127,7 @@ body {
 
     footer {
       #btn-search-task {
-        transform: translateY(20%);
+        transform: translateY(200%);
         transition: $transition-base;
       }
     }

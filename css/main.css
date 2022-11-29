@@ -72,7 +72,7 @@ body {
 }
 
 .app {
-  height: 95vh;
+  height: 100vh;
   overflow: hidden;
   color: #5800ff;
 }
@@ -89,7 +89,7 @@ body {
 }
 .app #app-activity footer #btn-search-task,
 .app #app-task footer #btn-search-task {
-  transform: translateY(20%);
+  transform: translateY(200%);
   transition: all 0.3s ease-out;
 }
 
