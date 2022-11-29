@@ -1,22 +1,31 @@
 $primary: #5800ff;
+
 $secondary: lighten(
   $color: $primary,
   $amount: 45,
 );
+
 $dark: #222831;
 $light: #fff;
 $muted: rgba(34, 40, 49, 0.4);
 $text-muted: $muted;
+
 $modal-fade-transform: scale(0.9);
+
 $box-shadow: 0 0 0.5rem $muted;
+
 $border-radius: 1rem;
 $border-color: $muted;
+
 $transition-base: all 0.3s ease-out;
+
 $dropdown-link-color: $primary;
 $dropdown-link-hover-bg: $secondary;
 $dropdown-link-active-bg: $primary;
 $dropdown-link-active-color: $light;
+
 $btn-link-color: $primary;
+
 $font-weight-semi-bold: 700;
 $font-weight-bold: 900;
 
