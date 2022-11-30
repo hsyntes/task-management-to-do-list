@@ -67,9 +67,7 @@
                 </button>
               </div>
               <div class="col-8 text-center">
-                <h4 class="text-light mb-0" id="app-task-title">
-                  App Task Title
-                </h4>
+                <h4 class="text-light mb-0" id="app-task-title"></h4>
               </div>
               <div class="col-2 text-end">
                 <div class="btn-group dropstart">
@@ -97,7 +95,11 @@
                 </div>
               </div>
             </nav>
-            <section class="app-area"></section>
+            <section class="app-area">
+              <h5 class="text-white text-center" id="current-activity-title">
+                ASDSA
+              </h5>
+            </section>
             <header class="d-flex align-items-center px-4" id="app-task-header">
               <span>
                 <h5 class="text-light mb-0">Today</h5>
@@ -105,7 +107,7 @@
               </span>
               <button
                 type="button"
-                class="btn btn-secondary ms-auto py-3 px-4"
+                class="btn btn-secondary ms-auto py-2 px-3"
                 data-bs-toggle="modal"
                 data-bs-target="#modal-add-task"
               >
@@ -250,6 +252,7 @@
                 id="input-add-task"
                 class="form-control py-2"
                 placeholder="Add new task"
+                autocomplete="off"
               />
               <div class="my-3">
                 <input
@@ -379,6 +382,7 @@
                 id="input-edit-task"
                 class="form-control py-2"
                 placeholder="Edit this task"
+                autocomplete="off"
               />
               <div class="my-3">
                 <input
@@ -573,6 +577,7 @@
                 id="input-search-task"
                 class="form-control py-2"
                 placeholder="Search task"
+                autocomplete="off"
               />
               <i
                 class="fa fa-search text-primary position-absolute pe-1"

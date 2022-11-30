@@ -37,6 +37,7 @@ const [
   appTaskMain,
   btnGoToAppActivity,
   appTaskTitle,
+  currentActivityTitle,
   btnDeleteAllTasks,
   tasksCount,
   formAddTask,
@@ -51,6 +52,7 @@ const [
   document.querySelector("#app-task-main"),
   document.querySelector("#btn-go-to-app-acitivty"),
   document.querySelector("#app-task-title"),
+  document.querySelector("#current-activity-title"),
   document.querySelector("#btn-delete-all-tasks"),
   document.querySelector("#tasks-count"),
   document.querySelector("#form-add-task"),
@@ -417,9 +419,17 @@ class App {
 
     this._getCurrentActivityTasks();
 
-    appTaskTitle.textContent = this.#dateTimeFormat;
-    tasksCount.textContent = this._calcTasksCount();
-    appTaskMain.style.position = "fixed";
+    [
+      appTaskTitle.textContent,
+      currentActivityTitle.textContent,
+      tasksCount.textContent,
+      appTaskMain.style.position,
+    ] = [
+      this.#dateTimeFormat,
+      this.#currentActivity.activityType,
+      this._calcTasksCount(),
+      "fixed",
+    ];
 
     btnSearchTask.classList.remove("d-none");
     setTimeout(() => {
