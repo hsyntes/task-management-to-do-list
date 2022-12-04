@@ -56,11 +56,15 @@
 }
 
 .rounded-top {
-  border-radius: 3rem 3rem 0 0 !important;
+  border-radius: 4.8rem 4.8rem 0 0 !important;
 }
 
 .rounded-left {
-  border-radius: 3rem 0 0 0 !important;
+  border-radius: 4.8rem 0 0 0 !important;
+}
+
+.offcanvas-bottom {
+  border-radius: 4.8rem 4.8rem 0 0 !important;
 }
 
 input:focus {

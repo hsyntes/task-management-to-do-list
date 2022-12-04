@@ -20,6 +20,14 @@ $btn-link-color: $primary;
 $font-weight-semi-bold: 700;
 $font-weight-bold: 900;
 
+@mixin roundedLeft($size) {
+  border-radius: $size 0 0 0 !important;
+}
+
+@mixin roundedTop($size) {
+  border-radius: $size $size 0 0 !important;
+}
+
 :root {
   --app-area: 50px;
 }
@@ -82,11 +90,15 @@ $font-weight-bold: 900;
 }
 
 .rounded-top {
-  border-radius: 3rem 3rem 0 0 !important;
+  @include roundedTop(4.8rem);
 }
 
 .rounded-left {
-  border-radius: 3rem 0 0 0 !important;
+  @include roundedLeft(4.8rem);
+}
+
+.offcanvas-bottom {
+  @include roundedTop(4.8rem);
 }
 
 input {
